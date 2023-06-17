@@ -1,8 +1,18 @@
 
 
 Backend: Fastapi +MongoDB or SQLite
-frontend: React
+frontend: angular
 
-npm run start
 
-uvicorn main:app --reload
+All of test CMD chould CD to project location first
+backend test CMD:
+cd backend
+    Start fastApi server:
+        uvicorn main:app --reload
+
+Frontend test CMD:
+cd backend
+    Start angular server:
+        npm run start
+    Start local server:
+        json-server --watch ../testing_file/db.json
