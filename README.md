@@ -11,8 +11,6 @@ cd backend
         uvicorn main:app --reload
 
 Frontend test CMD:
-cd backend
+cd frontend
     Start angular server:
         npm run start
-    Start local server:
-        json-server --watch ../testing_file/db.json

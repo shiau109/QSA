@@ -1,0 +1,13 @@
+<h2>Samples</h2>
+<div id="search-component">
+    <label for="search-box">Sample Search</label>
+    <input #searchBox id="search-box" (input)="search(searchBox.value)" />
+      
+    <ul class="search-result">
+      <li *ngFor="let sample of samples$ | async" >
+        <a routerLink="/sample/{{sample.serialNum}}">
+          {{sample.serialNum}}
+        </a>
+      </li>
+    </ul>
+</div>

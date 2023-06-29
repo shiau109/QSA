@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { HeroesComponent } from './heroes/heroes.component';
-import { HeroDetailComponent } from './hero-detail/hero-detail.component';
+import { SampleDetailComponent } from './components/sample-detail/sample-detail.component';
+import { SearchSampleComponent } from './components/search-sample/search-sample.component';
+import { JobListComponent } from './components/job-list/job-list.component';
+import { SearchComponent } from './components/search/search.component';
+
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'detail/:id', component: HeroDetailComponent },
-  { path: 'heroes', component: HeroesComponent }
+  { path: '', redirectTo: '/search', pathMatch: 'full' },
+  { path: 'search', component: SearchComponent },
+  { path: 'sample/:serialNum', component: SampleDetailComponent },
+  { path: 'joblist', component: JobListComponent }
 ];
 
 @NgModule({

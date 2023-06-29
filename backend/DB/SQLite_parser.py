@@ -1,8 +1,8 @@
-
+from sqlite3 import connect
+from pandas import read_sql, DataFrame
 class read_sql_lab:
     def __init__(self,db_path):
-        from sqlite3 import connect
-        from pandas import read_sql
+
         
         conn = connect(db_path) #建立資料庫
         
@@ -12,6 +12,7 @@ class read_sql_lab:
         self.user = read_sql("SELECT * FROM user", conn)[['id','username']]
         self.sample = read_sql("SELECT * FROM sample", conn)[['id','samplename','author_id','registered']]
         self.queue = read_sql("SELECT * FROM queue", conn)
+        self.list_samplename()
         
     def list_samplename(self):
         self.tmp_samplelist = self.sample.sort_values(by = 'registered', ascending=False) 
@@ -20,26 +21,44 @@ class read_sql_lab:
     def update_list_samplename(self, keyword:str=None):
         if keyword == '' or keyword == None:
             return self.list_samplename()
-        self.list_samplename()
+        
         self.tmp_samplelist = self.tmp_samplelist[self.tmp_samplelist['samplename'].str.contains(keyword, na=False)]
         return list(self.tmp_samplelist.sort_values(by = 'registered', ascending=False)['samplename'].unique())
 
     def select_sample(self,samplename):
 #         print("Selected the sample : "+samplename)
-        select_sample_id = self.tmp_samplelist[self.tmp_samplelist['samplename']==samplename]['id'].iloc[0]
+        select_filter = self.tmp_samplelist['samplename']==samplename
+        select_sample = self.tmp_samplelist[select_filter]
+        if len(select_sample.index) > 0:
+            select_sample_id = select_sample['id'].iloc[0]
+        else:
+            select_sample_id = None
         return select_sample_id
     
-    def list_time(self,samplename=''):
+    def list_time(self, samplename=''):
         try:
             sample_id = self.select_sample(samplename)
             return list(self.job[self.job['sample_id']==sample_id]['dateday'].unique())
         except:
             return list(self.job['dateday'].unique())
-    
+
+    def get_job( self, jobID: str ):
+        job_id = int(jobID)
+        try:
+            return self.job.loc[self.job['id']==job_id]
+        except:
+            print("Can't find data")
+            return None
 #     def update_list_time(self,keyword:str):
 #         tmp = self.job[self.job['dateday'].str.contains(keyword.split(r'(')[0], na=False)]
 #         return list(tmp.sort_values(by = 'id', ascending=True)['dateday'].unique())
-
+    def filter_job( self, column_name:str, term:str ):
+        sample_id = self.select_sample(term)
+        if sample_id != None:
+            filtered = self.job[ self.job[column_name] == int(sample_id) ]
+        else:
+            filtered = None
+        return filtered
     def jobid_search_pyqum(self,id:int):
         sample_id = self.job[self.job['id']==id]['sample_id'].iloc[0]
         queue_name = self.job[self.job['id']==id]['queue'].iloc[0]

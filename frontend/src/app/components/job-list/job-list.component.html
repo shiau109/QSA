@@ -1,0 +1,8 @@
+<p>job-list works!</p>
+<ul>
+    <li *ngFor="let job of headers">
+      <a routerLink="/detail/{{job.id}}">
+        {{job.id}}{{job.comment}}
+      </a>
+    </li>
+</ul>

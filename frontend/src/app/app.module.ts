@@ -1,25 +1,35 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { HeroDetailComponent } from './hero-detail/hero-detail.component';
-import { HeroesComponent } from './heroes/heroes.component';
-import { MessagesComponent } from './messages/messages.component';
 
+import { NgModule } from '@angular/core';
+
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MessagesComponent } from './components/messages/messages.component';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
-import { HeroSearchComponent } from './hero-search/hero-search.component';
+import { SearchSampleComponent } from './components/search-sample/search-sample.component';
+import { SampleDetailComponent } from './components/sample-detail/sample-detail.component';
+import { JobListComponent } from './components/job-list/job-list.component';
+import { SampleListComponent } from './components/sample-list/sample-list.component';
+import { SearchComponent } from './components/search/search.component';
+import { JobFilterComponent } from './components/job-filter/job-filter.component';
+
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
+    MatAutocompleteModule, 
+    JobFilterComponent,
+    BrowserAnimationsModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
@@ -28,11 +38,13 @@ import { HeroSearchComponent } from './hero-search/hero-search.component';
   ],
   declarations: [
     AppComponent,
-    DashboardComponent,
-    HeroesComponent,
-    HeroDetailComponent,
     MessagesComponent,
-    HeroSearchComponent
+    SearchSampleComponent,
+    SampleDetailComponent,
+    JobListComponent,
+    SampleListComponent,
+    SearchComponent,
+    
   ],
   bootstrap: [ AppComponent ]
 })
