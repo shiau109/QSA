@@ -24,7 +24,7 @@ export class JobService {
     private http: HttpClient,
     private messageService: MessageService) { }
 
-  /** GET Samples from the server */
+  /** GET Jobs from the server */
   getJobs(): Observable<JobHeader[]> {
     console.log(this.http.get(this.dataUrl) )
     return this.http.get<JobHeader[]>(this.dataUrl)
@@ -35,12 +35,12 @@ export class JobService {
       
   }
 
-  /** GET sample by serialNum. Will 404 if serialNum not found */
-  getJob(serialNum: string): Observable<JobHeader> {
-    const url = `${this.dataUrl}/${serialNum}`;
+  /** GET job by jobid. Will 404 if jobid not found */
+  getJobDetail(jobId: string): Observable<JobHeader> {
+    const url = `${this.dataUrl}/job/${jobId}`;
     return this.http.get<JobHeader>(url).pipe(
-      tap(_ => this.log(`fetched sample s/n=${serialNum}`)),
-      catchError(this.handleError<JobHeader>(`getSample s/n=${serialNum}`))
+      tap(_ => this.log(`fetched job ID =${jobId}`)),
+      catchError(this.handleError<JobHeader>(`Job ID ${jobId} return error`))
     );
   }
 

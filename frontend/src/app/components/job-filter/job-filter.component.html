@@ -24,10 +24,9 @@
   <!-- <ng-container *ngIf="jobHeaders; else loading"> -->
   <ul>
     <li *ngFor="let jobHeader of jobHeaders">
-      <!-- <a routerLink="/job/{{jobHeader.id}}"> -->
-        <span class="badge">{{jobHeader.id}}</span>
-        <span class="name">{{jobHeader.comment}}</span>
-      <!-- </a> -->
+      <a routerLink="/job/{{jobHeader.id}}">
+        {{jobHeader.id}}
+      </a>
     </li>
   </ul>
   <!-- </ng-container> -->

@@ -4,11 +4,12 @@ import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MessagesComponent } from './components/messages/messages.component';
 
@@ -20,6 +21,7 @@ import { JobListComponent } from './components/job-list/job-list.component';
 import { SampleListComponent } from './components/sample-list/sample-list.component';
 import { SearchComponent } from './components/search/search.component';
 import { JobFilterComponent } from './components/job-filter/job-filter.component';
+import { JobDetailComponent } from './components/job-detail/job-detail.component';
 
 @NgModule({
   imports: [
@@ -28,9 +30,9 @@ import { JobFilterComponent } from './components/job-filter/job-filter.component
     AppRoutingModule,
     HttpClientModule,
     MatAutocompleteModule, 
-    JobFilterComponent,
+    // JobFilterComponent,
     BrowserAnimationsModule,
-
+    ReactiveFormsModule,
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
 // Remove it when a real server is ready to receive requests.
@@ -44,7 +46,8 @@ import { JobFilterComponent } from './components/job-filter/job-filter.component
     JobListComponent,
     SampleListComponent,
     SearchComponent,
-    
+    JobDetailComponent,
+    JobFilterComponent,
   ],
   bootstrap: [ AppComponent ]
 })

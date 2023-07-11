@@ -1,0 +1,24 @@
+<div *ngIf="job_header">
+<div>
+    <h2>Job Details</h2>
+    <div>
+      <p>ID: {{job_header.id}}</p>
+      <p>Comment: {{job_header.comment}}</p>
+      <p>Config settings:</p>
+      <p *ngFor="let item of job_header.configs | keyvalue">           
+        Name: {{item.key}}, Value: {{item.value}}
+      </p>
+      <p>Axes:</p>
+      <p *ngFor="let x of job_header.axes ">           
+        Name: {{x[0]}}, points: {{x[1]}}
+      </p>
+      <p>Data:</p>
+      <p *ngFor="let x of job_header.data_labels ">           
+        Name: {{x}}
+      </p>
+    </div>
+    <div>
+      <button type="button" 
+      (click)="this.preview1D()">preview 1D plot</button>
+    </div>
+</div>

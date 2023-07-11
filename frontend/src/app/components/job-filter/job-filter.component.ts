@@ -22,17 +22,17 @@ import { JobHeader } from 'src/app/interfaces/job_header';
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
   styleUrls: ['./job-filter.component.css'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    NgFor,
-    AsyncPipe,
-    NgIf,
-  ],
+  // imports: [
+  //   FormsModule,
+  //   MatFormFieldModule,
+  //   MatInputModule,
+  //   MatAutocompleteModule,
+  //   ReactiveFormsModule,
+  //   NgFor,
+  //   AsyncPipe,
+  //   NgIf,
+    
+  // ],
 })
 export class JobFilterComponent {
   // samples$!: Observable<Sample[]>;
