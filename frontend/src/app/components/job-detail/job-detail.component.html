@@ -17,8 +17,16 @@
         Name: {{x}}
       </p>
     </div>
-    <div>
-      <button type="button" 
-      (click)="this.preview1D()">preview 1D plot</button>
-    </div>
+
+  <!-- <ng-container *ngIf="show_plot_1D">
+    <plotly-plot [data]="graph.data"></plotly-plot>
+  </ng-container> -->
+  <button type="button" 
+  (click)="this.previewData()">Preview data</button>
+  <ng-container *ngIf="show_pReq_form">
+    <app-plot-request-form>
+    </app-plot-request-form>
+  </ng-container>
+
+
 </div>

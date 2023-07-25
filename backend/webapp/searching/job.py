@@ -73,13 +73,45 @@ class JobFilter(BaseModel):
     date: str
     htag:str
 
-class AxisInfo(BaseModel):
+class ExpDataAxes(BaseModel):
     name: str
     position: int
 
-class Plot1DInfo(BaseModel):
-    x_axis: dict
-    y_axis: dict
+class PlotDataInfo(BaseModel):
+    name: str
+    axis: str
+
+class PlotRequest(BaseModel):
+    shape: list[ExpDataAxes]
+    axies_info: list[PlotDataInfo]
+
+class Plot1DReturn(BaseModel):
+    trace_name:list[str]
+    x: list[list[float]]
+    y: list[list[float]]
+
+class PlotContourReturn(BaseModel):
+    trace_name:list[str]
+    x: list[float]
+    y: list[float]
+    z: list[list[list[float]]]
+
+class Plot1DFuncRequest(BaseModel):
+    x: str
+    y: list[str]
+    other_position:list[ExpDataAxes]
+
+class PlotParEqRequest(BaseModel):
+    x: str
+    y: str
+    parameter: str
+    other_position:list[ExpDataAxes]
+
+class PlotContourRequest(BaseModel):
+    x: str
+    y: str
+    z: list[str]
+    other_position:list[ExpDataAxes]
 
 @router.get("/job/{job_ID}", tags=["searching"], response_model=JobHeader)
 async def get_job( job_ID: str ) -> dict:
@@ -106,32 +138,97 @@ async def get_job( job_ID: str ) -> dict:
     }
     return job_info
 
-@router.post("/job/{job_ID}/preview1D", tags=["searching"], response_model=Plot1DInfo)
-async def get_job_preview1D( job_ID: str, axes_info: list[AxisInfo] ) -> dict:
+@router.post("/job/{job_ID}/preview1D", tags=["searching"], response_model=Plot1DReturn)
+async def get_job_preview1D( job_ID: str, pReq: Plot1DFuncRequest ) -> dict:
 
     mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
-    job_header = mySQL.get_job(job_ID)
     job_data_path = mySQL.jobid_search_pyqum(job_ID)
     parser = PyqumPraser()
     job_data = parser.import_data(job_data_path)
     address = [0]*job_data.dimension
-    # x_axis_idx = job_data.get_axis_idx( x_axis )
-    # data_address[x_axis_idx]=-1
-    for a_info in axes_info:
+
+    for a_info in pReq.other_position:
         address_idx = job_data.get_axis_idx( a_info.name )
         print(f"axis {address_idx} {a_info.name} in postion {a_info.position}")
-        address[job_data.get_axis_idx( a_info.name )] = a_info.position
+        address[address_idx] = a_info.position
+    x_axis_idx = job_data.get_axis_idx( pReq.x )
+    address[x_axis_idx]=-1
+
     selected_data = job_data.get_subdata(address)
     print(selected_data.get_structure_info())
-    x_name = selected_data.exp_vars[0][0]
     plot_info = {
-        "x_axis":{
-            x_name:selected_data.exp_vars[0][1].tolist(),
-        },
-        "y_axis":{}
+        "trace_name":[],
+        "x":[selected_data.exp_vars[0][1].tolist()],
+        "y":[]
     }
-    for name, values in selected_data.data.items():
-        plot_info["y_axis"][name] = values.tolist()
+    for name in pReq.y:
+        plot_info["trace_name"].append(name)
+        plot_info["y"].append(selected_data.data[name].tolist())
+    return plot_info
+
+@router.post("/job/{job_ID}/previewParEq", tags=["searching"], response_model=Plot1DReturn)
+async def get_job_previewParEq( job_ID: str, pReq: PlotParEqRequest ) -> dict:
+
+    mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
+    job_data_path = mySQL.jobid_search_pyqum(job_ID)
+    parser = PyqumPraser()
+    job_data = parser.import_data(job_data_path)
+    address = [0]*job_data.dimension
+
+    for a_info in pReq.other_position:
+        address_idx = job_data.get_axis_idx( a_info.name )
+        print(f"axis {address_idx} {a_info.name} in postion {a_info.position}")
+        address[address_idx] = a_info.position
+    x_axis_idx = job_data.get_axis_idx( pReq.parameter )
+    address[x_axis_idx]=-1
+    
+    print(job_data.get_structure_info(),"New address", address)
+
+    selected_data = job_data.get_subdata(address)
+    print(selected_data.get_structure_info())
+    plot_info = {
+        "trace_name":[""],
+        "x":[selected_data.data[pReq.x].tolist()],
+        "y":[selected_data.data[pReq.y].tolist()]
+    }
+    return plot_info
+
+
+@router.post("/job/{job_ID}/previewContour", tags=["searching"], response_model=PlotContourReturn)
+async def get_job_previewContour( job_ID: str, pReq: PlotContourRequest ) -> dict:
+
+    mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
+    job_data_path = mySQL.jobid_search_pyqum(job_ID)
+    parser = PyqumPraser()
+    job_data = parser.import_data(job_data_path)
+    address = [0]*job_data.dimension
+
+    for a_info in pReq.other_position:
+        address_idx = job_data.get_axis_idx( a_info.name )
+        print(f"axis {address_idx} {a_info.name} in postion {a_info.position}")
+        address[address_idx] = a_info.position
+    x_axis_idx = job_data.get_axis_idx( pReq.x )
+    y_axis_idx = job_data.get_axis_idx( pReq.y )
+
+    address[x_axis_idx]=-1
+    address[y_axis_idx]=-1
+
+    print(job_data.get_structure_info(),"New address", address)
+
+    selected_data = job_data.get_subdata(address)
+    
+    selected_data.resturcture((selected_data.get_axis_idx( pReq.x ),selected_data.get_axis_idx( pReq.y )))
+    print(selected_data.get_structure_info())
+
+    plot_info = {
+        "trace_name":[],
+        "x":selected_data.exp_vars[0][1].tolist(),
+        "y":selected_data.exp_vars[1][1].tolist(),
+        "z":[]
+    }
+    for name in pReq.z:
+        plot_info["trace_name"].append(name)
+        plot_info["z"].append(selected_data.data[name].tolist())
     return plot_info
 
 @router.post("/search/job", tags=["searching"], response_model=list[JobHeader])

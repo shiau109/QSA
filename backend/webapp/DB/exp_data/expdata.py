@@ -166,6 +166,9 @@ class ExpData:
         return None
     
     def resturcture( self, new_order:tuple ):
+        """
+        new order ( 2,0,1 ) make 2 axis to 0, 0 axis to 1, 1 axis to 2
+        """
         data_dim = len(self.exp_vars)
         new_setting = []
         # Reset setting order
@@ -175,22 +178,16 @@ class ExpData:
 
         # Reshape data dimension
         for name, data in self.data.items():
-            self.__data[name] = np.moveaxis( data, [*range(data_dim)], new_order )
-    
+            self.__data[name] = np.moveaxis( data, new_order, [*range(data_dim)] )
     def to_DataFrame( self )->DataFrame:
         data_shape = list(self.shape)
         flat_exp_vars = {}
         for axis, ev in enumerate(self.exp_vars):
-            # print(axis,data_shape[:axis+1])
-
-
             repeat_length = 1
             for i in data_shape[axis+1:]:
                 repeat_length*=i
             axis_length = data_shape[axis]
             full_shape = data_shape[:axis]+[axis_length*repeat_length]
-
-
             if self.__is_linked_var(ev):
                 names = ev[0]
                 exp_vals = ev[1]
@@ -225,7 +222,6 @@ class ExpData:
 
         selected_address = [ address[i] for i in selected_axis]
         new_structure = selected_axis+remain_axis
-
         sub_expData = copy.deepcopy(self)
         sub_expData.resturcture( new_structure )
 
@@ -233,14 +229,16 @@ class ExpData:
             selected_exp_var = sub_expData.exp_vars.pop(0)
             name = selected_exp_var[0]
             val = selected_exp_var[1]
-            for i, n in enumerate(name):
-                if self.__is_linked_var(selected_exp_var):
+            
+            if self.__is_linked_var(selected_exp_var):
+                for i, n in enumerate(name):
                     sub_expData.configs[n] = val[i][address]
-                else:
-                    sub_expData.configs[n] = val[address]
+            else:
+                sub_expData.configs[name] = val[address]
 
 
             for dname, data in sub_expData.data.items():
+                print(dname, data.shape)
                 sub_expData.__data[dname] = data[address]
         return sub_expData
 

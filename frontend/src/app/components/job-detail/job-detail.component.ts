@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from 'src/app/services/job.service';
+import { FormControl } from '@angular/forms';
 
-import {
-   debounceTime, distinctUntilChanged, switchMap
- } from 'rxjs/operators';
- import { JobHeader } from 'src/app/interfaces/job_header';
+// Interface
+import { JobHeader } from 'src/app/interfaces/job_header';
+
+// Service
+import { BackToPlotlyService } from 'src/app/services/back-to-plotly.service';
 @Component({
   selector: 'app-job-detail',
   templateUrl: './job-detail.component.html',
@@ -15,21 +16,29 @@ import {
 })
 export class JobDetailComponent {
   job_header: JobHeader | undefined;
+  // show_plot_1D: boolean;
+  show_pReq_form: boolean;
+
+  name = new FormControl('');
   constructor(
     private route: ActivatedRoute,
     private jobService: JobService,
     // private location: Location
-  ) {  }
+    private b2p:BackToPlotlyService
+  ) {
+    this.show_pReq_form = false
+  }
 
   ngOnInit(): void {
     this.getSample();
+    this.show_pReq_form = false
   }
 
   getSample(): void {
-    const sn = this.route.snapshot.paramMap.get('jobId');
-    console.log('goes into job',sn)
-    if (sn!= null){
-      this.jobService.getJobDetail(sn).subscribe(job_header => {
+    const jobid = this.route.snapshot.paramMap.get('jobId');
+    console.log('goes into job',jobid)
+    if (jobid!= null){
+      this.jobService.getJobDetail(jobid).subscribe(job_header => {
         this.job_header = job_header;
         console.log('return',this.job_header);
         console.log('return',this.job_header.axes);
@@ -41,7 +50,16 @@ export class JobDetailComponent {
     }
   }
   
-  preview1D(): void{
-    console.log('press button')
-  }
+
+
+
+
+  previewData(): void{
+    console.log('press button previewData')
+    
+    this.show_pReq_form = !this.show_pReq_form;
+
+  };
+
+
 }

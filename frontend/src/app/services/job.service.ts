@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { Sample } from '../interfaces/sample';
 import { JobHeader } from '../interfaces/job_header';
+import { Plot1DFuncRequest, PlotParEqRequest, PlotContourRequest } from '../interfaces/data_extract';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -44,6 +45,32 @@ export class JobService {
     );
   }
 
+  /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
+  getJob1Dpreview(jobId: string, pReq: Plot1DFuncRequest): Observable<any> {
+    const url = `${this.dataUrl}/job/${jobId}/preview1D`;
+    return this.http.post<any>(url,pReq).pipe(
+      tap(_ => this.log(`fetched job ID =${jobId}`)),
+      catchError(this.handleError<any>(`Job ID ${jobId} return error`))
+    );
+  }
+
+  /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
+  getJobPreviewParEq(jobId: string, pReq: PlotParEqRequest): Observable<any> {
+    const url = `${this.dataUrl}/job/${jobId}/previewParEq`;
+    return this.http.post<any>(url,pReq).pipe(
+      tap(_ => this.log(`fetched job ID =${jobId}`)),
+      catchError(this.handleError<any>(`Job ID PreviewParEq ${jobId} return error`))
+    );
+  }
+
+  /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
+  getJobPreviewContour(jobId: string, pReq: PlotContourRequest): Observable<any> {
+    const url = `${this.dataUrl}/job/${jobId}/previewContour`;
+    return this.http.post<any>(url,pReq).pipe(
+      tap(_ => this.log(`fetched job ID =${jobId}`)),
+      catchError(this.handleError<any>(`Job ID previewContour ${jobId} return error`))
+    );
+  }
   /** Log a SampleService message with the MessageService */
   private log(message: string) {
     this.messageService.add(`SampleService: ${message}`);
@@ -71,7 +98,7 @@ export class JobService {
   }
 
   /* GET samples whose serialNum contains search term */
-  filterJobs( filter: JobFilter): Observable<JobHeader[]> {
+  filterJobs( filter: JobFilter ): Observable<JobHeader[]> {
     // if (!filter.trim()) {
     //   // if not search term, return empty hero array.
     //   return of([]);
