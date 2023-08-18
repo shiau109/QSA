@@ -22,6 +22,8 @@ class Sample(BaseModel):
 from DB.SQLite_parser import read_sql_lab
 from DB.exp_data.parser.data_praser import ExpDataParser, PyqumPraser
 from DB.exp_data.expdata import ExpData
+from DB.exp_data.data_process import PrecessCMD, DataProcesser
+
 
 @router.get("/searching/samples", tags=["searching"], response_model=list[Sample])
 async def get_samples( name: str | None = None ):
@@ -58,6 +60,11 @@ async def get_sample( serial_number: str ) -> dict:
 
     }
     return sample
+
+
+class JobSummary(BaseModel):
+    id: str
+    note: str    
 
 class JobHeader(BaseModel):
     id: str
@@ -113,6 +120,11 @@ class PlotContourRequest(BaseModel):
     z: list[str]
     other_position:list[ExpDataAxes]
 
+class ExpData_Info( BaseModel ):
+    configs: dict
+    axes: list
+    data_labels: list[str]
+
 @router.get("/job/{job_ID}", tags=["searching"], response_model=JobHeader)
 async def get_job( job_ID: str ) -> dict:
 
@@ -134,27 +146,53 @@ async def get_job( job_ID: str ) -> dict:
         "comment": str(job_header["comment"].values[0]),
         "configs": job_data.configs,
         "axes": axis_infos,
-        "data_labels": list(job_data.data.keys())
+        "data_labels": list(job_data.data.keys()),
     }
     return job_info
 
-@router.post("/job/{job_ID}/preview1D", tags=["searching"], response_model=Plot1DReturn)
-async def get_job_preview1D( job_ID: str, pReq: Plot1DFuncRequest ) -> dict:
-
+@router.post("/job/{job_ID}/preprocess", tags=["searching"], response_model=ExpData_Info)
+async def get_job_preprocess( job_ID: str, pProReq: list[PrecessCMD] ) -> ExpData_Info:
+    print(job_ID,pProReq)
     mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
     job_data_path = mySQL.jobid_search_pyqum(job_ID)
     parser = PyqumPraser()
     job_data = parser.import_data(job_data_path)
-    address = [0]*job_data.dimension
+    data_preProcessor = DataProcesser(job_data)
+    new_data = data_preProcessor.import_CMDs(pProReq)
+    axis_infos = []
+    for exp_var in job_data.exp_vars:
+        axis_info = (exp_var[0],len(exp_var[1]))
+        axis_infos.append(axis_info)
+    data_info = {
+        "configs": new_data.configs,
+        "axes": list(axis_infos),
+        "data_labels": list(new_data.data.keys()),
+    }
+    print(data_info)
+    return data_info
+
+
+@router.post("/job/{job_ID}/preview1D", tags=["searching"], response_model=Plot1DReturn)
+async def get_job_preview1D( job_ID: str, pReq: Plot1DFuncRequest, pProReq: list[PrecessCMD] ) -> dict:
+    print(job_ID,pReq,pProReq)
+    mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
+    job_data_path = mySQL.jobid_search_pyqum(job_ID)
+    parser = PyqumPraser()
+    job_data = parser.import_data(job_data_path)
+    # Pre process
+    data_preProcessor = DataProcesser(job_data)
+    new_data = data_preProcessor.import_CMDs(pProReq)
+
+    address = [0]*new_data.dimension
 
     for a_info in pReq.other_position:
-        address_idx = job_data.get_axis_idx( a_info.name )
+        address_idx = new_data.get_axis_idx( a_info.name )
         print(f"axis {address_idx} {a_info.name} in postion {a_info.position}")
         address[address_idx] = a_info.position
-    x_axis_idx = job_data.get_axis_idx( pReq.x )
+    x_axis_idx = new_data.get_axis_idx( pReq.x )
     address[x_axis_idx]=-1
 
-    selected_data = job_data.get_subdata(address)
+    selected_data = new_data.get_subdata(address)
     print(selected_data.get_structure_info())
     plot_info = {
         "trace_name":[],
@@ -219,34 +257,34 @@ async def get_job_previewContour( job_ID: str, pReq: PlotContourRequest ) -> dic
     
     selected_data.resturcture((selected_data.get_axis_idx( pReq.x ),selected_data.get_axis_idx( pReq.y )))
     print(selected_data.get_structure_info())
-
     plot_info = {
         "trace_name":[],
         "x":selected_data.exp_vars[0][1].tolist(),
         "y":selected_data.exp_vars[1][1].tolist(),
         "z":[]
     }
+
     for name in pReq.z:
         plot_info["trace_name"].append(name)
         plot_info["z"].append(selected_data.data[name].tolist())
     return plot_info
 
-@router.post("/search/job", tags=["searching"], response_model=list[JobHeader])
-async def serch_job( filter: JobFilter ) -> list[JobHeader]:
+
+
+@router.post("/search/job", tags=["searching"], response_model=list[JobSummary])
+async def serch_job( filter: JobFilter ) -> list[JobSummary]:
 
     mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
     selector_d = {
         'id': 'id',
-        'sample_id': 'sample',
-        'dateday':'date',
-        'comment':'comment'
+        'note': 'note',
     }
     sampleSN = filter.sn
     dbData = mySQL.filter_job( "sample_id", sampleSN )
-    from pandas import DataFrame
+    # from pandas import DataFrame
     if not isinstance(dbData, type(None)):
         jobs = dbData.rename(columns=selector_d)[selector_d.values()]
-        headers = jobs.to_dict('records')
+        summaries = jobs.to_dict('records')
     else:
-        headers = []
-    return headers
+        summaries = []
+    return summaries

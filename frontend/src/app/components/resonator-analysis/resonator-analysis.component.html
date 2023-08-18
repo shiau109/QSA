@@ -1,1 +1,14 @@
 <p>resonator-analysis works!</p>
+
+<div [formGroup]="analysisReqForm">
+    <label for="freq">Frequency: </label>
+    <input id="freq" type="text" formControlName="freq">
+  
+    <label for="dep">Dependency: </label>
+    <input id="dep" type="text" formControlName="dep">
+
+    <label for="other_position">Other Position: </label>
+    <input id="other_position" type="text" formControlName="other_position">
+
+    <button type="submit" (click)="this.do_analysis()" [disabled]="!analysisReqForm.valid">Analysis</button>
+</div>

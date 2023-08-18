@@ -1,0 +1,29 @@
+
+<div [formGroup]="req_form">
+ 
+    <label for="CMDs">CMDs: </label>
+    <input id="CMDs" type="text" formControlName="CMDs" >
+
+    <button type="submit" (click)="this.preProcess()" [disabled]="!req_form.valid">Process</button>
+</div>
+<button type="button" 
+(click)="this.click_help()">Help</button>
+<ng-container *ngIf="show_CMD_hints">
+    <p>preprocess CMDs!</p>
+    <p>List of dictionary form :</p>
+    <p>"method":</p>
+    <p>"target":</p>
+    <p>"parameter":</p>
+    <p>"output:</p>
+
+    <p>method:</p>
+    <p>mean:</p>
+    <p>parameter: axis, range</p>
+    <p>add:</p>
+    <p>parameter: value</p>
+    <p>multiply:</p>
+    <p>parameter: value</p>
+    <p>unit convert:</p>
+    <p>parameter: from, to </p>
+
+</ng-container>

@@ -3,8 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { Sample } from '../interfaces/sample';
-import { JobHeader } from '../interfaces/job_header';
-import { Plot1DFuncRequest, PlotParEqRequest, PlotContourRequest } from '../interfaces/data_extract';
+import { JobHeader, JobSummary } from '../interfaces/job_info';
+import { 
+  Plot1DFuncRequest, 
+  PlotParEqRequest, 
+  PlotContourRequest, 
+  PreProcessRequest } from '../interfaces/data_extract';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -26,12 +30,12 @@ export class JobService {
     private messageService: MessageService) { }
 
   /** GET Jobs from the server */
-  getJobs(): Observable<JobHeader[]> {
-    console.log(this.http.get(this.dataUrl) )
-    return this.http.get<JobHeader[]>(this.dataUrl)
+  getJobs(): Observable<JobSummary[]> {
+    // console.log(this.http.get(this.dataUrl) )
+    return this.http.get<JobSummary[]>(this.dataUrl)
       .pipe(
         tap(_ => this.log('fetched heroes')),
-        catchError(this.handleError<JobHeader[]>('getHeroes', []))
+        catchError(this.handleError<JobSummary[]>('getHeroes', []))
       );
       
   }
@@ -46,9 +50,10 @@ export class JobService {
   }
 
   /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
-  getJob1Dpreview(jobId: string, pReq: Plot1DFuncRequest): Observable<any> {
+  getJob1Dpreview(jobId: string, pReq: Plot1DFuncRequest, pProReq: PreProcessRequest[]): Observable<any> {
     const url = `${this.dataUrl}/job/${jobId}/preview1D`;
-    return this.http.post<any>(url,pReq).pipe(
+    console.log({pReq,pProReq})
+    return this.http.post<any>(url,{pReq,pProReq}).pipe(
       tap(_ => this.log(`fetched job ID =${jobId}`)),
       catchError(this.handleError<any>(`Job ID ${jobId} return error`))
     );
@@ -98,7 +103,7 @@ export class JobService {
   }
 
   /* GET samples whose serialNum contains search term */
-  filterJobs( filter: JobFilter ): Observable<JobHeader[]> {
+  filterJobs( filter: JobFilter ): Observable<JobSummary[]> {
     // if (!filter.trim()) {
     //   // if not search term, return empty hero array.
     //   return of([]);
@@ -106,7 +111,7 @@ export class JobService {
     // console.log(`${this.dataUrl}/search/job`)
     return this.http.post<any>(`${this.dataUrl}/search/job`,filter).pipe(
       tap(_ => this.log(`search`)),
-      catchError(this.handleError<JobHeader[]>(`search error`))
+      catchError(this.handleError<JobSummary[]>(`search error`))
     );
   }
 

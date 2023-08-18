@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit  } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { PlotRequestTypesEnum, PlotRequestTypes2Label } from 'src/app/interfaces/data_extract'
 import { ActivatedRoute } from '@angular/router';
@@ -13,6 +13,7 @@ import { BackToPlotlyService } from 'src/app/services/back-to-plotly.service';
   styleUrls: ['./plot-request-form.component.css']
 })
 export class PlotRequestFormComponent {
+  @Input() preProcess_CMDs: [];
   pOptions = PlotRequestTypesEnum;
   pLabels = PlotRequestTypes2Label;
   get_values = Object.values;
@@ -46,6 +47,7 @@ export class PlotRequestFormComponent {
                 private jobService: JobService,
                 // private location: Location
                 private b2p:BackToPlotlyService ) {
+    this.preProcess_CMDs = [];
     this.pReq_F1 = true;
     this.pReq_PE = false;
     this.pReq_F2 = false;
@@ -55,6 +57,7 @@ export class PlotRequestFormComponent {
     this.pReq_F1 = false;
     this.pReq_PE = false;
     this.pReq_F2 = false;
+    
     switch(value){
       case PlotRequestTypesEnum.F1:
         console.log("Switch to 1D function")
@@ -92,8 +95,8 @@ export class PlotRequestFormComponent {
   }
   
   preview1Dfunction(): void{
-    console.log('press preview1D button')
-    
+    console.log('press preview1D button');
+    console.log(this.preProcess_CMDs);
     const jobid = this.route.snapshot.paramMap.get('jobId');
     console.log(this.plotReqF1Form.value);
     let userForm = this.plotReqF1Form.value;
@@ -114,7 +117,7 @@ export class PlotRequestFormComponent {
     console.log(pReq)
     
     if (jobid!=null){
-      this.jobService.getJob1Dpreview(jobid,pReq).subscribe(data => {
+      this.jobService.getJob1Dpreview(jobid,pReq,this.preProcess_CMDs).subscribe(data => {
         let tr_names:string[] = data["trace_name"];
         let x:number[][] = data["x"];
         let y:number[][] = data["y"];

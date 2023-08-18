@@ -54,12 +54,10 @@ class read_sql_lab:
 #     def update_list_time(self,keyword:str):
 #         tmp = self.job[self.job['dateday'].str.contains(keyword.split(r'(')[0], na=False)]
 #         return list(tmp.sort_values(by = 'id', ascending=True)['dateday'].unique())
-    def filter_job( self, column_name:str, term:str ):
+    def filter_job( self, column_name:str, term:str )->DataFrame:
         # sample_id = self.select_sample(term)
         
-
         sample_id = self.sample[self.sample["samplename"] == term]['id'].iloc[0]
-        print(type(sample_id),sample_id)
         b_filter = self.job[column_name]==sample_id
         if b_filter.sum() > 0:
             filtered = self.job[ b_filter ]

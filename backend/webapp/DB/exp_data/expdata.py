@@ -65,14 +65,12 @@ class ExpData:
         else:
             return None
     
-    def get_structure_info( self ):
+    def get_structure_info( self )->list:
         structure_info = []
         for exp_v in self.exp_vars:
             structure_info.append((exp_v[0],len(exp_v[1])))
         return structure_info
-    
-    def average( self, name ):
-        pass
+
 
     def __setting_shape( self ):
         setting_shape = []
@@ -109,7 +107,6 @@ class ExpData:
             # if not isinstance(input_name, list):
             #     input_name = list(input_name)
 
-            
             if self.__is_linked_var(input_name):
                 for i, n in enumerate(input_name):
                     ref_len = len(input_vals[0])
@@ -153,7 +150,7 @@ class ExpData:
             return axis_name
 
 
-    def get_axis_idx( self, name )->int:
+    def get_axis_idx( self, name )->int|None:
         """
         find axis index by the setting name.
         """
@@ -242,7 +239,14 @@ class ExpData:
                 sub_expData.__data[dname] = data[address]
         return sub_expData
 
-
+    def get_data( self, name:str )->np.ndarray:
+        data_names = self.data.keys()
+        if name in data_names:
+            return self.data[name]
+        else:
+            print("No data names in {name}")
+            return None
+        
 if __name__ == '__main__':
 
     setting = [(["x","x1"],np.array([[0,1],[10,11]])),("y",np.array([4,5,6])),("z",np.array([-1,-2,-3,-3]))]

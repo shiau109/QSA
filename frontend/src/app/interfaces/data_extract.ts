@@ -35,3 +35,11 @@ export const PlotRequestTypes2Label: Record<PlotRequestTypesEnum, string> = {
   [PlotRequestTypesEnum.PE]: "Parametric equation (data vs data)",
   [PlotRequestTypesEnum.F2]: "2D map",
 };
+
+export interface PreProcessRequest{
+  method: string;
+  target: string[];
+  parameter: object;
+  output: string[];
+
+}

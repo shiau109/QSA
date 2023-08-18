@@ -5,7 +5,7 @@ import { JobService } from 'src/app/services/job.service';
 import { FormControl } from '@angular/forms';
 
 // Interface
-import { JobHeader } from 'src/app/interfaces/job_header';
+import { JobHeader } from 'src/app/interfaces/job_info';
 
 // Service
 import { BackToPlotlyService } from 'src/app/services/back-to-plotly.service';
@@ -18,7 +18,7 @@ export class JobDetailComponent {
   job_header: JobHeader | undefined;
   // show_plot_1D: boolean;
   show_pReq_form: boolean;
-
+  preProcess_CMDs: [];
   name = new FormControl('');
   constructor(
     private route: ActivatedRoute,
@@ -26,12 +26,13 @@ export class JobDetailComponent {
     // private location: Location
     private b2p:BackToPlotlyService
   ) {
-    this.show_pReq_form = false
+    this.show_pReq_form = false;
+    this.preProcess_CMDs = [];
   }
 
   ngOnInit(): void {
     this.getSample();
-    this.show_pReq_form = false
+    this.show_pReq_form = false;
   }
 
   getSample(): void {
@@ -49,10 +50,6 @@ export class JobDetailComponent {
         });
     }
   }
-  
-
-
-
 
   previewData(): void{
     console.log('press button previewData')
@@ -61,5 +58,10 @@ export class JobDetailComponent {
 
   };
 
+  get_preProcessCMDs(json_array: any) {
+    console.log("get CMDs");
+    this.preProcess_CMDs = json_array;
+    console.log(this.preProcess_CMDs);
+    }
 
 }

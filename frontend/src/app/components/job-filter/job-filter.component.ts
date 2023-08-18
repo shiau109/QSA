@@ -13,7 +13,7 @@ import { Sample } from 'src/app/interfaces/sample';
 import { SampleService } from 'src/app/services/sample.service';
 import { JobFilter } from 'src/app/interfaces/filter';
 import { JobService } from 'src/app/services/job.service';
-import { JobHeader } from 'src/app/interfaces/job_header';
+import { JobSummary } from 'src/app/interfaces/job_info';
 // export interface User {
 //   name: string;
 // }
@@ -39,7 +39,7 @@ export class JobFilterComponent {
   options: string[] = [];
   filteredOptions!: Observable<string[]>;
   jobFilter! : FormGroup;
-  jobHeaders!: JobHeader[];
+  JobSummaries!: JobSummary[];
   constructor(  private sampleService: SampleService,
                 private fb: FormBuilder,
                 private jobService: JobService) { }
@@ -61,11 +61,11 @@ export class JobFilterComponent {
   }
   onSubmit({ value, valid }: { value: JobFilter, valid: boolean }) {
     this.jobService.filterJobs(value).subscribe(data => {
-      this.jobHeaders = data;
+      this.JobSummaries = data;
     });
     console.log(value, valid);
 
-    console.log(this.jobHeaders);
+    console.log(this.JobSummaries);
   }
   // displayFn(user: string): string {
   //   console.log('displayFn', user);

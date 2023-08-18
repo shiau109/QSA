@@ -22,7 +22,6 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import { SearchSampleComponent } from './components/search-sample/search-sample.component';
 import { SampleDetailComponent } from './components/sample-detail/sample-detail.component';
-import { JobListComponent } from './components/job-list/job-list.component';
 import { SampleListComponent } from './components/sample-list/sample-list.component';
 import { SearchComponent } from './components/search/search.component';
 import { JobFilterComponent } from './components/job-filter/job-filter.component';
@@ -30,6 +29,7 @@ import { JobDetailComponent } from './components/job-detail/job-detail.component
 import { PlotRequestFormComponent } from './components/plot-request-form/plot-request-form.component';
 import { AnalyzerHomeComponent } from './components/analyzer-home/analyzer-home.component';
 import { ResonatorAnalysisComponent } from './components/resonator-analysis/resonator-analysis.component';
+import { PreprocessRequestFormComponent } from './components/preprocess-request-form/preprocess-request-form.component';
 
 @NgModule({
   imports: [
@@ -53,7 +53,6 @@ import { ResonatorAnalysisComponent } from './components/resonator-analysis/reso
     MessagesComponent,
     SearchSampleComponent,
     SampleDetailComponent,
-    JobListComponent,
     SampleListComponent,
     SearchComponent,
     JobDetailComponent,
@@ -61,6 +60,7 @@ import { ResonatorAnalysisComponent } from './components/resonator-analysis/reso
     PlotRequestFormComponent,
     AnalyzerHomeComponent,
     ResonatorAnalysisComponent,
+    PreprocessRequestFormComponent,
   ],
   bootstrap: [ AppComponent ]
 })

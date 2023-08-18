@@ -1,4 +1,4 @@
-<p>job-filter works!</p>
+<h2>Job Filter</h2>
 <div>
   <form novalidate (ngSubmit)="onSubmit(jobFilter)" [formGroup]="jobFilter">
     <!-- <mat-form-field appearance="outline">
@@ -23,10 +23,11 @@
 
   <!-- <ng-container *ngIf="jobHeaders; else loading"> -->
   <ul>
-    <li *ngFor="let jobHeader of jobHeaders">
-      <a routerLink="/job/{{jobHeader.id}}">
-        {{jobHeader.id}}
+    <li *ngFor="let job of JobSummaries">
+      <a routerLink="/job/{{job.id}}">
+        {{job.id}}
       </a>
+      <p>{{job.note}}</p>
     </li>
   </ul>
   <!-- </ng-container> -->

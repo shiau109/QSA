@@ -21,10 +21,15 @@
   <!-- <ng-container *ngIf="show_plot_1D">
     <plotly-plot [data]="graph.data"></plotly-plot>
   </ng-container> -->
+  <app-preprocess-request-form (preProcessCMDs)="get_preProcessCMDs($event)">
+  </app-preprocess-request-form> 
+
   <button type="button" 
   (click)="this.previewData()">Preview data</button>
+
   <ng-container *ngIf="show_pReq_form">
-    <app-plot-request-form>
+    <app-plot-request-form 
+    [preProcess_CMDs]="this.preProcess_CMDs">
     </app-plot-request-form>
   </ng-container>
 
