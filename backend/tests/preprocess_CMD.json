@@ -1,0 +1,33 @@
+[
+	{
+		"method": "mean",
+		"target": ["I","Q"],
+		"parameter": {
+			"axis":"RECORD_TIME_NS",
+			"range":[0,1000]
+		},
+		"output": []
+	},
+	{
+		"method": "complex",
+		"target": ["I","Q"],
+		"parameter": {
+		},
+		"output": ["v21"]
+	},
+	{
+		"method": "abs",
+		"target": ["v21"],
+		"parameter": {
+		},
+		"output": ["amplitude"]
+	},
+	{
+		"method": "angle",
+		"target": ["v21"],
+		"parameter": {
+		},
+		"output": ["phase"]
+	}
+
+]

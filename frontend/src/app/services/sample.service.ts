@@ -12,7 +12,7 @@ import { catchError, map, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class SampleService {
-  private samplesUrl = 'http://localhost:8000';  // URL to web api
+  private samplesUrl = 'http://localhost:7999';  // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };

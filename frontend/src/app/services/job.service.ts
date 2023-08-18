@@ -20,7 +20,7 @@ import { JobFilter } from '../interfaces/filter';
 })
 export class JobService {
 
-  private dataUrl = 'http://localhost:8000';  // URL to web api
+  private dataUrl = 'http://localhost:7999';  // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };

@@ -5,8 +5,8 @@ from numpy import linspace
 from pydantic import BaseModel
 
 # Following info should move to DB or configuration file.
-TEST_DB_PATH = r"..\tests\pyqum.sqlite"
-TEST_DATA_PATH = r"..\tests"
+TEST_DB_PATH = r"C:\Users\ASQUM\HODOR\CONFIG\pyqum.sqlite"
+TEST_DATA_PATH = r"C:/Users/ASQUM/HODOR/CONFIG/USRLOG"
 router = APIRouter(
     # prefix="/searching",
     # tags=["myapp"],

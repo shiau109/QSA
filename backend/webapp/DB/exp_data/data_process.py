@@ -23,7 +23,7 @@ class DataProcesser:
                 self.mean( cmd.target, cmd.parameter["axis"], cmd.parameter["range"] )
             case "complex":
                 name_re = cmd.target[0]
-                name_im = cmd.target[0]
+                name_im = cmd.target[1]
                 self.to_complex( name_re, name_im, cmd.output[0] )
             case "abs":
                 self.get_abs( cmd.target, cmd.output )
