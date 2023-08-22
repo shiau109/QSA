@@ -122,6 +122,13 @@ class SingleQubitShape(PyqumShaper):
             for name, str_cmd in r_json.items():
                 setting_obj = SeriesStr( str_cmd )
                 settings.append( (name, np.array(setting_obj.data) ) )
+
+        # Ratis for multiplex readout
+        if "IF_ALIGN_KHZ" in p_key:
+            IF_ALIGN_KHZ = np.array(perimeter["IF_ALIGN_KHZ"].split(" ")) # list -> ndarray
+            settings.append( ("IF_ALIGN_KHZ", IF_ALIGN_KHZ) )
+
+
         # print(settings)
         if "READOUTYPE" in p_key:
             readout_mode = perimeter["READOUTYPE"]
