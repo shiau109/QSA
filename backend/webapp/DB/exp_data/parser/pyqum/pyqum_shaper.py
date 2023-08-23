@@ -124,9 +124,10 @@ class SingleQubitShape(PyqumShaper):
                 settings.append( (name, np.array(setting_obj.data) ) )
 
         # Ratis for multiplex readout
-        if "IF_ALIGN_KHZ" in p_key:
-            IF_ALIGN_KHZ = np.array(perimeter["IF_ALIGN_KHZ"].split(" ")) # list -> ndarray
-            settings.append( ("IF_ALIGN_KHZ", IF_ALIGN_KHZ) )
+        if "READOUTYPE" in p_key:
+            if "IF_ALIGN_KHZ" in p_key and perimeter["READOUTYPE"]=="one-shot":
+                IF_ALIGN_KHZ = np.array(perimeter["IF_ALIGN_KHZ"].split(" ")) # list -> ndarray
+                settings.append( ("IF_ALIGN_KHZ", IF_ALIGN_KHZ) )
 
 
         # print(settings)
