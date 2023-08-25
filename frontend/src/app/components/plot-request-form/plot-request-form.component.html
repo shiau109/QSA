@@ -1,4 +1,4 @@
-<select #poltType (change)="onSelected(poltType.value)"  >
+<!-- <select #poltType (change)="onSelected(poltType.value)"  >
     <option *ngFor="let val of get_values(pOptions)" [value]="val"> {{pLabels[val]}} </option>
 </select>
 <ng-container *ngIf="pReq_F1">
@@ -48,7 +48,13 @@
 
         <button type="submit" (click)="this.previewContour()" [disabled]="!plotReqP2Form.valid">Plot</button>
     </div>
-</ng-container>
+</ng-container> -->
+
+<div [formGroup]="req_form">
+    <label for="CMDs">CMD: </label>
+    <input id="CMDs" type="text" formControlName="CMDs">   
+    <button type="submit" (click)="this.plotCMDfunction()">CMD Plot</button>
+</div>
 
 <ng-container *ngIf="show_plot">
 <plotly-plot [data]="graph.data"></plotly-plot>

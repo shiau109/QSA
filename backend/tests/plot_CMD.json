@@ -1,0 +1,64 @@
+10761
+{
+    "type": "2DBasic",
+    "plot": [
+        {
+            "name":"RECORD_TIME_NS",
+            "info_type":"var",
+            "designation":"x"
+        },
+        {
+            "name":"I",
+            "info_type":"data",
+            "designation":"y"
+        },
+        {
+            "name":"Q",
+            "info_type":"data",
+            "designation":"y"
+        }
+    ],
+    "address": [
+        {
+            "var_name":"ROF",
+            "position":[0],
+            "axis":1
+        },
+        {
+            "var_name":"ROL",
+            "position":[0],
+            "axis":1
+        }
+    ]
+
+  }
+
+
+    {
+    "type": "3DScalar",
+    "plot": [
+        {
+            "name":"RECORD_TIME_NS",
+            "info_type":"var",
+            "designation":"x"
+        },
+        {
+            "name":"ROF",
+            "info_type":"var",
+            "designation":"y"
+        },
+        {
+            "name":"Q",
+            "info_type":"data",
+            "designation":"z"
+        }
+    ],
+    "address": [
+        {
+            "var_name":"ROL",
+            "position":[0],
+            "axis":1
+        }
+    ]
+
+  }

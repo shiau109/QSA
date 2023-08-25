@@ -126,7 +126,7 @@ class PyqumPraser( ExpDataParser ):
         for name, vals in self.__shape_info:
             setting_len = vals.shape[-1]
             if setting_len > 1:
-                reshape_setting.append(setting_len)
+                reshape_setting.append( setting_len )
                 len_header *= setting_len
                 changed_setting.append( ( name, vals ) )
             else:

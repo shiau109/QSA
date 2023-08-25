@@ -15,14 +15,24 @@ from abc import ABCMeta, abstractmethod
 import copy
 from pandas import DataFrame
 
+from typing import TypedDict
+
+class DataAddress( TypedDict ):
+    var_name: str
+    position: list[int]
+    axis: int
+
+
+
 class ExpData:
     '''
     The format of the data should follow the rule:
-    2. setting a list about experiment.
-    setting format is (name, numpy array)
+    2. exp_vars is setting a list about experiment.
+        setting format is (name, numpy array)
     3. data record numerical value in numpy ndarray.
+        {  "name": numpy array,  }
     '''
-    def __init__( self, exp_vars:list, data:dict, configs:dict={} ):
+    def __init__( self, exp_vars:list[dict[str,np.ndarray]], data:dict, configs:dict={} ):
         self.__configs = configs
         self.__data = data
         if self.__check_exp_vars(exp_vars):
@@ -89,7 +99,8 @@ class ExpData:
                 return None
         return data_shape
 
-    def __is_linked_var( self, exp_var:tuple )->bool:
+    def __is_linked_var( self, exp_var_idx:int )->bool:
+        exp_var = self.exp_vars[exp_var_idx]
         if isinstance(exp_var[0], list) and len(exp_var[0]) > 1 :
             return True
         else:
@@ -99,22 +110,21 @@ class ExpData:
         """
         If all the linked exp var have same length, return true and register self.__exp_vars, else return false
         """
-        checked_exp_vars = []
-        for ev in exp_vars:
+        self.__exp_vars = []
+        for i, ev in enumerate(exp_vars):
             input_name = ev[0]
             input_vals = ev[1]
             # Check and rebuild input format
             # if not isinstance(input_name, list):
             #     input_name = list(input_name)
-
-            if self.__is_linked_var(input_name):
+            self.__exp_vars.append(ev)
+            if self.__is_linked_var(i):
                 for i, n in enumerate(input_name):
                     ref_len = len(input_vals[0])
                     if len(input_vals[i]) != ref_len:
                         print(f"Waring!! Length of linked exp var {n} is not {ref_len} as {input_name[0]}")
                         return False
             
-            checked_exp_vars.append((input_name, input_vals))
         return True
 
     
@@ -155,27 +165,32 @@ class ExpData:
         find axis index by the setting name.
         """
         for i, setting_info in enumerate(self.exp_vars):
-            names = [setting_info[0]]
+            names = setting_info[0]
+            if not self.__is_linked_var(i):
+                names = [setting_info[0]]
             for n in names:
                 if n == name:
                     return i
         print(f"Setting name {name} can't be found")
         return None
     
-    def resturcture( self, new_order:tuple ):
+    def resturcture( self, selected_axes:list[str], new_axes:list[int] ):
         """
-        new order ( 2,0,1 ) make 2 axis to 0, 0 axis to 1, 1 axis to 2
+        selected_axes : name of var
+        new_axes : idx for new axis
         """
-        data_dim = len(self.exp_vars)
-        new_setting = []
         # Reset setting order
-        for new_i in new_order:
-            new_setting.append(self.exp_vars[new_i])
-        self.__exp_vars = new_setting
-
+        for selected_name, new_axis in zip(selected_axes, new_axes):
+            if new_axis<0:
+                new_axis = self.dimension+new_axis
+            original_axis = self.get_axis_idx(selected_name)
+            selected_var = self.exp_vars.pop(original_axis)
+            self.exp_vars.insert( new_axis, selected_var)
+            # print("temp",selected_name, original_axis, "to", new_axis, self.exp_vars)
         # Reshape data dimension
-        for name, data in self.data.items():
-            self.__data[name] = np.moveaxis( data, new_order, [*range(data_dim)] )
+            for name, data in self.data.items():
+                self.__data[name] = np.moveaxis( data, original_axis, new_axis )
+
     def to_DataFrame( self )->DataFrame:
         data_shape = list(self.shape)
         flat_exp_vars = {}
@@ -185,7 +200,7 @@ class ExpData:
                 repeat_length*=i
             axis_length = data_shape[axis]
             full_shape = data_shape[:axis]+[axis_length*repeat_length]
-            if self.__is_linked_var(ev):
+            if self.__is_linked_var(axis):
                 names = ev[0]
                 exp_vals = ev[1]
             else:
@@ -195,48 +210,67 @@ class ExpData:
                 v = exp_vals[i]
                 repeat_part = np.full(tuple((repeat_length,axis_length)),v).flatten('F')
                 stack_exp_vars = np.full(tuple(full_shape),repeat_part)
-                # print("nD shape ", stack_exp_vars.shape)
-                # print("flatten ",stack_exp_vars.flatten().shape)
                 flat_exp_vars[n] = stack_exp_vars.flatten()
         new_df = DataFrame(flat_exp_vars)
         for col_name, nd_data in self.data.items():
             new_df[col_name] = nd_data.flatten()
 
         return new_df
-    def get_subdata( self, address:list )->ExpData:
+    def get_subdata( self, address:list[DataAddress] )->ExpData:
         """
         Get a copy of the part of this object 
         """
-        data_dim = len(self.exp_vars)
-        selected_axis = []
-        remain_axis = []
-        selected_address = []
-        for axis, address_idx in enumerate(address):
-            if address_idx == -1:
-                remain_axis.append( axis )
-            else:
-                selected_axis.append( axis )
-
-        selected_address = [ address[i] for i in selected_axis]
-        new_structure = selected_axis+remain_axis
         sub_expData = copy.deepcopy(self)
-        sub_expData.resturcture( new_structure )
+        for a_info in address:
+            print(a_info)
+            selected_pos = np.array(a_info["position"],dtype = int)
+            name = a_info["var_name"]
+            new_axis =  a_info["axis"]
+            if selected_pos[0] == -1:
+                """
+                Select all
+                """
+                sub_expData.resturcture([name],[new_axis])
+            elif len(selected_pos) == 1:
+                """
+                Only one is selected in the axis, dimension will -1
+                """
+                sub_expData.resturcture([name],[0])
+                selected_pos = selected_pos[0]
+                # Slice data
+                for dname, data in sub_expData.data.items():
+                    sub_expData.__data[dname] = data[selected_pos]
+                # Modify exp_var   
+                islinked =  sub_expData.__is_linked_var(0)
+                sub_expData.resturcture([name],[0])
+                selected_var = sub_expData.exp_vars.pop(0)
+                if islinked:
+                    for i, var in enumerate(selected_var):
+                        
+                        sub_expData.configs[var[0][i]] = var[1][i][selected_pos]
+                else:
+                    sub_expData.configs[selected_var[0]] = selected_var[1][selected_pos]
 
-        for axis, address in enumerate(selected_address):
-            selected_exp_var = sub_expData.exp_vars.pop(0)
-            name = selected_exp_var[0]
-            val = selected_exp_var[1]
-            
-            if self.__is_linked_var(selected_exp_var):
-                for i, n in enumerate(name):
-                    sub_expData.configs[n] = val[i][address]
             else:
-                sub_expData.configs[name] = val[address]
+                """
+                Multi-value is selected in the axis, dimension will not change
+                """
+                sub_expData.resturcture([name],[0])
+                for dname, data in sub_expData.data.items():
+                    # Slice data
+                    sub_expData.__data[dname] = data[selected_pos]
+                    selected_var = sub_expData.__exp_vars[0]
+                    if not sub_expData.__is_linked_var(0):
+                        sub_expData.__exp_vars[0] = (selected_var[0],selected_var[1][selected_pos])
+                    else:
+                        new_var = []
+                        for val in selected_var[1]:
+                            new_var.append(val[selected_pos])
+                        sub_expData.__exp_vars[0][1] = new_var 
 
+                sub_expData.resturcture([name],[new_axis])
 
-            for dname, data in sub_expData.data.items():
-                print(dname, data.shape)
-                sub_expData.__data[dname] = data[address]
+    
         return sub_expData
 
     def get_data( self, name:str )->np.ndarray:
@@ -251,24 +285,48 @@ if __name__ == '__main__':
 
     setting = [(["x","x1"],np.array([[0,1],[10,11]])),("y",np.array([4,5,6])),("z",np.array([-1,-2,-3,-3]))]
     rawdata = {
-        "I":np.array([[[1,2,3,4],[5,6,7,8],[9,10,11,12]],[[21,22,23,24],[25,26,27,28],[29,30,31,32]]])
+        "I":np.empty((2,3,4))
     }
     myData = ExpData(setting,rawdata)
-    print( myData.to_DataFrame() )
+    # print( myData.to_DataFrame() )
     # print( myData.configs )
-    # print( myData.get_structure_info())
+    print( myData.get_structure_info())
     print( myData.shape)
-    # myData.resturcture([2,1,0])
-    # print( myData.configs )
-    # print( myData.get_axis_idx("z"))
-    # print( myData.get_axis_name(0))
-    # print( myData.shape )
-    # print( myData.dimension )
-    newExpData = myData.get_subdata([1,-1,1])
-    print( newExpData.configs )
-    print( newExpData.exp_vars)
+    # myData.resturcture(["y","x"],[0,1])
+    # print("After resturcture")
+    # print( myData.get_structure_info())
+    # print( myData.shape)
+    testTypedDict: DataAddress = {
+            "var_name":"x",
+            "position":[1],
+            "axis":1,
+        }
+    print(DataAddress)
+    subdata_address = [
+        # {
+        #     "var_name":"x",
+        #     "position":[-1],
+        #     "axis":-1,
+        # },
+        {
+            "var_name":"y",
+            "position":[-1],
+            "axis":-1,
+        },
+                {
+            "var_name":"z",
+            "position":[-1],
+            "axis":-1,
+        }
+    ]
+    subdata = myData.get_subdata(subdata_address)
+    print("Sub data")
+    print( subdata.get_structure_info())
+    print( subdata.shape)
+    print("Origin data")
+    print( myData.get_structure_info())
+    print( myData.shape)
     # print( newExpData.get_axis_name(0))
-    print( newExpData.shape )
     # print( newExpData.dimension )
     # new_data = np.moveaxis( data, [range(3)], list((1,0,2)) )
     # print( new_data )

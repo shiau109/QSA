@@ -16,6 +16,10 @@ export class PlotRequestFormComponent {
   @Input() preProcess_CMDs: [];
   pOptions = PlotRequestTypesEnum;
   pLabels = PlotRequestTypes2Label;
+
+  req_form = this.fb.group({
+    CMDs: '{}',
+  });
   get_values = Object.values;
   pReq_F1:boolean;
   pReq_PE:boolean;
@@ -85,7 +89,7 @@ export class PlotRequestFormComponent {
         let sep_info = info.split(":")
         let axis_info:ExpDataAxes = {
           name:sep_info[0],
-          position:Number(sep_info[1])
+          position:[Number(sep_info[1])]
         }
         return axis_info
       })
@@ -93,45 +97,53 @@ export class PlotRequestFormComponent {
       return []
     }
   }
-  
-  preview1Dfunction(): void{
-    console.log('press preview1D button');
-    console.log(this.preProcess_CMDs);
+  plotCMDfunction():void{
+    console.log('press plotCMDfunction button');
+    let jsonObj_plot = JSON.parse(this.req_form.value.CMDs!);
+    console.log(jsonObj_plot);
     const jobid = this.route.snapshot.paramMap.get('jobId');
-    console.log(this.plotReqF1Form.value);
-    let userForm = this.plotReqF1Form.value;
-    let pReq: Plot1DFuncRequest = {
-      x:'',
-      y:[],
-      other_position:[]
-    };
-    
-    if (typeof userForm.x === "string"){
-      pReq.x = userForm.x
-    }
-    if (typeof userForm.y === "string"){
-      pReq.y = userForm.y.split(",")
-    }
-    pReq.other_position = this.__other_position_parser(userForm.other_position)
-    
-    console.log(pReq)
-    
     if (jobid!=null){
-      this.jobService.getJob1Dpreview(jobid,pReq,this.preProcess_CMDs).subscribe(data => {
-        let tr_names:string[] = data["trace_name"];
-        let x:number[][] = data["x"];
-        let y:number[][] = data["y"];
-        this.show_plot = true
-        let traces = this.b2p.data1DTraces(tr_names, x, y)
-
-        this.graph = {
-          data: traces,
-          layout: {width: 320, height: 240, title: 'A Fancy Plot'}
-        };
-        console.log(this.graph)
-        });  
-    }
+      this.jobService.getJobPreview(jobid,jsonObj_plot,this.preProcess_CMDs).subscribe(data => {
+        console.log(data)
+        if (jsonObj_plot["type"] == "2DBasic"){
+          this.preview2DBasic(data)
+        }
+        if (jsonObj_plot["type"] == "3DScalar"){
+          this.preview3DScalar(data)
+        }
+      });
+    };
   };
+  preview2DBasic( data:any ): void{
+    let tr_names:string[] = data["trace_name"];
+    let x:number[][] = data["x"];
+    let y:number[][] = data["y"];
+    this.show_plot = true
+    let traces = this.b2p.data1DTraces(tr_names, x, y)
+
+    this.graph = {
+      data: traces,
+      layout: {width: 320, height: 240, title: 'Preview data'}
+    };
+    console.log(this.graph)
+  };  
+  
+
+  preview3DScalar( data:any ): void{
+    let tr_names:string[] = data["trace_name"];
+    let x:number[] = data["x"];
+    let y:number[] = data["y"];
+    let z:number[][] = data["z"];
+    this.show_plot = true
+    let traces = this.b2p.dataContour(tr_names, x, y, z)
+
+    this.graph = {
+      data: traces,
+      layout: {width: 320, height: 240, title: 'A Fancy Plot'}
+    };
+    console.log(this.graph)
+  };  
+ 
 
   previewParEq(): void{
     console.log('previewParEq button')
@@ -200,22 +212,6 @@ export class PlotRequestFormComponent {
     pReq.other_position = this.__other_position_parser(userForm.other_position)
     
     console.log(pReq)
-    
-    if (jobid!=null){
-      this.jobService.getJobPreviewContour(jobid,pReq).subscribe(data => {
-        let tr_names:string[] = data["trace_name"];
-        let x:number[] = data["x"];
-        let y:number[] = data["y"];
-        let z:number[][] = data["z"];
-        this.show_plot = true
-        let traces = this.b2p.dataContour(tr_names, x, y, z)
-
-        this.graph = {
-          data: traces,
-          layout: {width: 320, height: 240, title: 'A Fancy Plot'}
-        };
-        console.log(this.graph)
-        });  
-    }
-  };  
+     
+  }
 }

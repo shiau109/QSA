@@ -8,7 +8,8 @@ import {
   Plot1DFuncRequest, 
   PlotParEqRequest, 
   PlotContourRequest, 
-  PreProcessRequest } from '../interfaces/data_extract';
+  PreProcessRequest,
+  PlotRequest } from '../interfaces/data_extract';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -49,10 +50,18 @@ export class JobService {
     );
   }
 
+  getJobPreview(jobId: string, pReq: PlotRequest, pProReq: PreProcessRequest[]): Observable<any> {
+    const url = `${this.dataUrl}/job/${jobId}/preview`;
+    console.log('service getJobPreview {pReq,pProReq}')
+    return this.http.post<any>(url,{pReq,pProReq}).pipe(
+      tap(_ => this.log(`fetched job ID =${jobId}`)),
+      catchError(this.handleError<any>(`Job ID ${jobId} return error`))
+    );
+  }
   /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
   getJob1Dpreview(jobId: string, pReq: Plot1DFuncRequest, pProReq: PreProcessRequest[]): Observable<any> {
     const url = `${this.dataUrl}/job/${jobId}/preview1D`;
-    console.log({pReq,pProReq})
+    // console.log({pReq,pProReq})
     return this.http.post<any>(url,{pReq,pProReq}).pipe(
       tap(_ => this.log(`fetched job ID =${jobId}`)),
       catchError(this.handleError<any>(`Job ID ${jobId} return error`))

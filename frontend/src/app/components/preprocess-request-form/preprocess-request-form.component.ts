@@ -22,14 +22,12 @@ export class PreprocessRequestFormComponent {
   });
 
   constructor(  private fb:FormBuilder,
-                private route: ActivatedRoute ) {
+                 ) {
     this.show_CMD_hints = false;
   }
   preProcess(): void{
     console.log('press preProcess button')
-     
     let jsonObj = JSON.parse(this.req_form.value.CMDs!);
-    const jobid = this.route.snapshot.paramMap.get('jobId');
     console.log(jsonObj);
     this.preProcessCMDs.emit(jsonObj);  
   }

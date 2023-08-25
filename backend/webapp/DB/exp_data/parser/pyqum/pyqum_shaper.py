@@ -123,6 +123,7 @@ class SingleQubitShape(PyqumShaper):
                 setting_obj = SeriesStr( str_cmd )
                 settings.append( (name, np.array(setting_obj.data) ) )
         # print(settings)
+        
         if "READOUTYPE" in p_key:
             readout_mode = perimeter["READOUTYPE"]
             match readout_mode:

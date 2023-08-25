@@ -19,7 +19,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
 import { MessagesComponent } from './components/messages/messages.component';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
 import { SearchSampleComponent } from './components/search-sample/search-sample.component';
 import { SampleDetailComponent } from './components/sample-detail/sample-detail.component';
 import { SampleListComponent } from './components/sample-list/sample-list.component';

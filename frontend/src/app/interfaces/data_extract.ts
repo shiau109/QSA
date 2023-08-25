@@ -2,7 +2,7 @@ import { JsonPipe } from "@angular/common";
 
 export interface ExpDataAxes {
   name: string;
-  position: number;
+  position: number[];
 }
 
 export interface Plot1DFuncRequest {
@@ -26,7 +26,7 @@ export interface PlotContourRequest {
 }
 
 export enum PlotRequestTypesEnum {
-  F1 = "1DFunc",
+  F1 = "Basic2D",
   PE = "ParEq",
   F2 = "2D",
 }
@@ -35,6 +35,12 @@ export const PlotRequestTypes2Label: Record<PlotRequestTypesEnum, string> = {
   [PlotRequestTypesEnum.PE]: "Parametric equation (data vs data)",
   [PlotRequestTypesEnum.F2]: "2D map",
 };
+
+export interface PlotRequest{
+  type: PlotRequestTypesEnum;
+  data: object;
+  format: object;
+}
 
 export interface PreProcessRequest{
   method: string;
