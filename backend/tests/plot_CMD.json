@@ -3,14 +3,9 @@
     "type": "2DBasic",
     "plot": [
         {
-            "name":"RECORD_TIME_NS",
-            "info_type":"var",
-            "designation":"x"
-        },
-        {
             "name":"I",
             "info_type":"data",
-            "designation":"y"
+            "designation":"x"
         },
         {
             "name":"Q",
@@ -19,26 +14,16 @@
         }
     ],
     "address": [
-        {
-            "var_name":"ROF",
-            "position":[0],
-            "axis":1
-        },
-        {
-            "var_name":"ROL",
-            "position":[0],
-            "axis":1
-        }
     ]
 
   }
 
 
-    {
+{
     "type": "3DScalar",
     "plot": [
         {
-            "name":"RECORD_TIME_NS",
+            "name":"ROL",
             "info_type":"var",
             "designation":"x"
         },
@@ -48,17 +33,19 @@
             "designation":"y"
         },
         {
-            "name":"Q",
+            "name":"I",
             "info_type":"data",
             "designation":"z"
         }
     ],
     "address": [
-        {
-            "var_name":"ROL",
-            "position":[0],
-            "axis":1
-        }
+
     ]
 
-  }
+}
+
+  {
+    "var_name":"ROL",
+    "position":[0],
+    "axis":1
+}

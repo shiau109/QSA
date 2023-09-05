@@ -5,7 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from dependencies import get_query_token, get_token_header
 from internal import admin
 # from routers import items, users
-from searching import job
+from searching import searching
+from job import job
+from sample import sample
+from analysis import resonator
 
 # app = FastAPI(dependencies=[Depends(get_query_token)])
 
@@ -15,6 +18,9 @@ app = FastAPI()
 # app.include_router(users.router)
 # app.include_router(items.router)
 app.include_router(job.router)
+app.include_router(resonator.router)
+app.include_router(searching.router)
+app.include_router(sample.router)
 
 app.include_router(
     admin.router,

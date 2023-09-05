@@ -1,7 +1,5 @@
 @echo off
 
-
-:: This batch file runs pyqum v0.1
 ECHO WELCOME TO QAS
 
 

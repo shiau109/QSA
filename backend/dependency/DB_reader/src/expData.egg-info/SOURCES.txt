@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/DB_reader/SQLite_parser.py
+src/DB_reader/__init__.py
+src/expData.egg-info/PKG-INFO
+src/expData.egg-info/SOURCES.txt
+src/expData.egg-info/dependency_links.txt
+src/expData.egg-info/top_level.txt
