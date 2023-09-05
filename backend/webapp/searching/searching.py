@@ -4,7 +4,7 @@ from dependencies import get_token_header
 from numpy import linspace
 from pydantic import BaseModel
 
-from internal.access import get_dataInfo
+from internal.access import get_db_info
 
 router = APIRouter(
     prefix="/searching",
@@ -27,7 +27,7 @@ class JobSummary(BaseModel):
 @router.post("/job", response_model=list[JobSummary])
 async def search_job( filter: JobFilter ) -> list[JobSummary]:
 
-    mySQL = get_dataInfo()
+    mySQL = get_db_info()
     selector_d = {
         'id': 'id',
         'note': 'note',
@@ -51,7 +51,7 @@ class SampleIntro(BaseModel):
 @router.get("/samples", response_model=list[SampleIntro])
 async def get_samples( name: str | None = None ):
 
-    mySQL = get_dataInfo()
+    mySQL = get_db_info()
     sample_num = len(mySQL.list_samplename())
     samples = []
     for i, sn in enumerate(mySQL.update_list_samplename(name)):
@@ -66,7 +66,7 @@ async def get_samples( name: str | None = None ):
 @router.get("/sample-list", response_model=list[str])
 async def get_samples( name: str | None = None ):
 
-    mySQL = get_dataInfo()
+    mySQL = get_db_info()
     sample_num = len(mySQL.list_samplename())
     sample_list = mySQL.update_list_samplename(name)
     return sample_list

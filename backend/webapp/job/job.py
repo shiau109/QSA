@@ -16,9 +16,7 @@ router = APIRouter(
 
 
 
-from internal.access import get_dataInfo
-from expData.parser.data_praser import ExpDataParser, PyqumPraser
-from expData.expdata import ExpData, DataAddress
+from internal.access import get_job_header, get_job_expdata
 from expData.data_process import PrecessCMD, DataProcesser
 
 
@@ -48,23 +46,6 @@ class Plot1DReturn(BaseModel):
 
 
 
-class Plot1DFuncRequest(BaseModel):
-    x: str
-    y: list[str]
-    other_position:list[DataAddress]
-
-class PlotParEqRequest(BaseModel):
-    x: str
-    y: str
-    parameter: str
-    other_position:list[DataAddress]
-
-class PlotContourRequest(BaseModel):
-    x: str
-    y: str
-    z: list[str]
-    other_position:list[DataAddress]
-
 class ExpData_Info( BaseModel ):
     configs: dict
     axes: list
@@ -76,11 +57,8 @@ from .data_plot import PlotRequest, plot_data, Plot2DBasicReturn, Plot3DscalarRe
 @router.get("/{job_ID}", response_model=JobHeader)
 async def get_job( job_ID: str ) -> dict:
 
-    mySQL = get_dataInfo()
-    job_header = mySQL.get_job(job_ID)
-    job_data_path = mySQL.jobid_search_pyqum(job_ID)
-    parser = PyqumPraser()
-    job_data = parser.import_data(job_data_path)
+    job_header = get_job_header( job_ID )
+    job_data = get_job_expdata( job_ID )
     axis_infos = []
     for exp_var in job_data.exp_vars:
         axis_info = (exp_var[0],len(exp_var[1]))
@@ -100,10 +78,8 @@ async def get_job( job_ID: str ) -> dict:
 
 @router.post("/{job_ID}/preprocess", response_model=ExpData_Info)
 async def get_job_preprocess( job_ID: str, pProReq: list[PrecessCMD] ) -> ExpData_Info:
-    mySQL = get_dataInfo()
-    job_data_path = mySQL.jobid_search_pyqum(job_ID)
-    parser = PyqumPraser()
-    job_data = parser.import_data(job_data_path)
+    
+    job_data = get_job_expdata( job_ID )
     data_preProcessor = DataProcesser(job_data)
     new_data = data_preProcessor.import_CMDs(pProReq)
     axis_infos = []
@@ -121,10 +97,7 @@ async def get_job_preprocess( job_ID: str, pProReq: list[PrecessCMD] ) -> ExpDat
 @router.post("/{job_ID}/preview", response_model=Plot2DBasicReturn|Plot3DscalarReturn)
 async def get_job_preview( job_ID: str, pReq: PlotRequest, pProReq: list[PrecessCMD] ) -> dict:
     print(job_ID,pReq,pProReq)
-    mySQL = get_dataInfo()
-    job_data_path = mySQL.jobid_search_pyqum(job_ID)
-    parser = PyqumPraser()
-    job_data = parser.import_data(job_data_path)
+    job_data = get_job_expdata( job_ID )
     # Pre process
     data_preProcessor = DataProcesser(job_data)
     new_data = data_preProcessor.import_CMDs(pProReq)

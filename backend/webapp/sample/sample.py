@@ -15,7 +15,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-from internal.access import get_dataInfo
+from internal.access import get_db_info
 
 class SampleDetail(BaseModel):
     id: int
@@ -25,7 +25,7 @@ class SampleDetail(BaseModel):
 @router.get("/{serial_number}", response_model=SampleDetail)
 async def get_sample_detail( serial_number: str ) -> dict:
 
-    mySQL = get_dataInfo()
+    mySQL = get_db_info()
     sample_id = mySQL.select_sample(serial_number)
     sample = {
         "id": sample_id,

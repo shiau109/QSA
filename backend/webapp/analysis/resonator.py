@@ -11,12 +11,12 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-from internal.access import get_dataInfo
+from internal.access import get_db_info
 
 
 @router.get("/resonator_fit", tags=["analysis"], response_model=str)
 async def fit_qFactor( name: str | None = None ):
 
-    mySQL = get_dataInfo()
+    mySQL = get_db_info()
     
     return name
