@@ -31,8 +31,9 @@ app.include_router(
 )
 
 origins = [
-    "http://localhost",
+    # "http://localhost",
     "http://localhost:4200",
+    "http://192.168.1.150:4200",
 ]
 
 app.add_middleware(
@@ -41,6 +42,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    
 )
 
 @app.get("/")

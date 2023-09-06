@@ -10,7 +10,7 @@ from expData.parser.data_praser import ExpDataParser, PyqumPraser
 from expData.data_process import PrecessCMD, DataProcesser
 
 
-def get_db_info( ):
+def get_db_info( )->read_sql_lab:
     mySQL = read_sql_lab(TEST_DB_PATH,TEST_DATA_PATH)
     return mySQL
 

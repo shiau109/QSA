@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 # from sys import Path
 from dependencies import get_token_header
-from numpy import linspace
+from numpy import linspace 
 from pydantic import BaseModel
 
 # Following info should move to DB or configuration file.
@@ -15,8 +15,7 @@ router = APIRouter(
 
 
 
-
-from internal.access import get_job_header, get_job_expdata
+from internal.access import get_db_info, get_job_header, get_job_expdata
 from expData.data_process import PrecessCMD, DataProcesser
 
 
@@ -52,6 +51,7 @@ class ExpData_Info( BaseModel ):
     data_labels: list[str]
 
 from .data_plot import PlotRequest, plot_data, Plot2DBasicReturn, Plot3DscalarReturn
+from fastapi.responses import FileResponse
 
 
 @router.get("/{job_ID}", response_model=JobHeader)
@@ -105,4 +105,19 @@ async def get_job_preview( job_ID: str, pReq: PlotRequest, pProReq: list[Precess
     plot_package = plot_data(new_data, pReq)
     return plot_package
 
+@router.post("/{job_ID}/download/rawdata", response_class=FileResponse)
+async def get_download_rawdata( job_ID: str ) -> dict:
+    print(f"Download raw data with jobID {job_ID}")
+    db_info = get_db_info()
 
+    from pathlib import Path
+
+    rawdata_path = Path(db_info.jobid_search_pyqum( job_ID ))
+
+    # path = Path(rawdata_path)
+    if "pyqum" in rawdata_path.suffix:
+        filename = f"{job_ID}.pyqum"
+    else:  
+        filename = job_ID+rawdata_path.suffix
+    print(rawdata_path)
+    return FileResponse(rawdata_path, filename=filename)

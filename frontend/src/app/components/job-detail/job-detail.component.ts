@@ -63,5 +63,23 @@ export class JobDetailComponent {
     this.preProcess_CMDs = json_array;
     console.log(this.preProcess_CMDs);
     }
-
+  
+  download_rawdata(){
+    const jobid = this.route.snapshot.paramMap.get('jobId');
+    if (jobid!= null){
+      this.jobService.downloadJobRawdata(jobid).subscribe((res) => {
+        console.log( res.body);
+        console.log(res.headers.get('content-disposition').split('"'))
+        let filename = res.headers.get('content-disposition').split('"')[1]
+        console.log("download file", filename);
+        let blob: Blob = new Blob([res.body]); // , { type: "application/pdf" });
+        let downloadUrl = window.URL.createObjectURL(blob);
+        let link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = filename;
+        link.click();
+      });
+    }
+    
+  }
 }

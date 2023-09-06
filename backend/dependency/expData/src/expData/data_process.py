@@ -12,7 +12,7 @@ class DataProcesser:
     def __init__( self, data:ExpData ):
         self.expdata = data
 
-    def import_CMDs( self, cmds:list[PrecessCMD]):
+    def import_CMDs( self, cmds:list[PrecessCMD])->ExpData:
         for cmd in cmds:
             self.__cmd_parser(cmd)
         return self.expdata

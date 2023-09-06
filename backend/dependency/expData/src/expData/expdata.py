@@ -280,7 +280,11 @@ class ExpData:
         else:
             print("No data names in {name}")
             return None
-        
+
+    # def to_npz( output ):
+
+
+
 if __name__ == '__main__':
 
     setting = [(["x","x1"],np.array([[0,1],[10,11]])),("y",np.array([4,5,6])),("z",np.array([-1,-2,-3,-3]))]
