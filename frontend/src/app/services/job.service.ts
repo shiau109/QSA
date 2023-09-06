@@ -21,7 +21,7 @@ import { JobFilter } from '../interfaces/filter';
 })
 export class JobService {
 
-  private dataUrl = 'http://192.168.1.150:7999';  // URL to web api
+  private dataUrl = 'http://192.168.1.135:7999';  // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };

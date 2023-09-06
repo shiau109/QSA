@@ -28,7 +28,8 @@ class Plot3DscalarReturn(BaseModel):
 
 
 def plot_data( data:ExpData, plot_request:PlotRequest )->Plot2DBasicReturn:
-    print(plot_request)
+    
+    print(plot_request.type)
     match plot_request.type:
         case "2DBasic":
             return plot_2DBasic(data,plot_request)
@@ -48,19 +49,38 @@ def plot_2DBasic( data:ExpData, plot_request:PlotRequest )->Plot2DBasicReturn:
                 "axis": -1,
             })
 
+        if plot_des["designation"] == "x":
+            print(f"{plot_des['name']} as x")
+            x_name = plot_des["name"]
+            x_type = plot_des["info_type"]
+
+        elif plot_des["designation"] == "y":
+            print(f"{plot_des['name']} as y")
+            y_name = plot_des["name"]
+            y_type = plot_des["info_type"]
+
 
     selected_data = data.get_subdata(plot_request.address)
     print(selected_data.get_structure_info())
-    plot_output = {
-        "trace_name":[],
-        "x":[selected_data.exp_vars[0][1].tolist()],
-        "y":[]
-    }
-    for plot_des in plot_request.plot:
-        if plot_des["designation"] == "y":
-            name = plot_des["name"]
-            plot_output["trace_name"].append(name)
-            plot_output["y"].append(selected_data.data[name].tolist())
+    if x_type == "var" and y_type == "data":
+        plot_output = {
+            "trace_name":[],
+            "x":[selected_data.exp_vars[0][1].tolist()],
+            "y":[]
+        }
+        for plot_des in plot_request.plot:
+            if plot_des["designation"] == "y":
+                name = plot_des["name"]
+                plot_output["trace_name"].append(name)
+                plot_output["y"].append(selected_data.get_data(name).tolist())
+    
+    elif x_type == "data" and y_type == "data":
+        plot_output = {
+            "trace_name":["data"],
+            "x":[selected_data.get_data(x_name).tolist()],
+            "y":[selected_data.get_data(y_name).tolist()]
+        }
+
     # print(plot_output["y"])
     return plot_output
 
@@ -73,7 +93,7 @@ def plot_3Dscalar( data:ExpData, plot_request:PlotRequest ) -> Plot3DscalarRetur
             plot_request.address.append({
                 "var_name": plot_des["name"],
                 "position": [-1],
-                "axis": -1,
+                "axis": 0,
             })
         elif plot_des["designation"] == "y":
             print(f"{plot_des['name']} as y")
@@ -81,7 +101,7 @@ def plot_3Dscalar( data:ExpData, plot_request:PlotRequest ) -> Plot3DscalarRetur
             plot_request.address.append({
                 "var_name": plot_des["name"],
                 "position": [-1],
-                "axis": -2,
+                "axis": 1,
             })
         elif plot_des["designation"] == "z":
             print(f"{plot_des['name']} as z")
@@ -94,7 +114,7 @@ def plot_3Dscalar( data:ExpData, plot_request:PlotRequest ) -> Plot3DscalarRetur
         "trace_name":[trace_name],
         "x":selected_data.exp_vars[0][1].tolist(),
         "y":selected_data.exp_vars[1][1].tolist(),
-        "z":[selected_data.get_data(trace_name).tolist()]
+        "z":[selected_data.get_data(trace_name).transpose().tolist()]
     }
 
     return plot_output

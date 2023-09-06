@@ -2,10 +2,10 @@
 
 from DB_reader.SQLite_parser import read_sql_lab
 
-# TEST_DB_PATH = r"C:\Users\ASQUM\HODOR\CONFIG\pyqum.sqlite"
-# TEST_DATA_PATH = r"C:/Users/ASQUM/HODOR/CONFIG/USRLOG"
-TEST_DB_PATH = r"..\tests\pyqum.sqlite"
-TEST_DATA_PATH = r"..\tests"
+TEST_DB_PATH = r"C:\Users\ASQUM\HODOR\CONFIG\pyqum.sqlite"
+TEST_DATA_PATH = r"C:/Users/ASQUM/HODOR/CONFIG/USRLOG"
+# TEST_DB_PATH = r"..\tests\pyqum.sqlite"
+# TEST_DATA_PATH = r"..\tests"
 from expData.parser.data_praser import ExpDataParser, PyqumPraser
 from expData.data_process import PrecessCMD, DataProcesser
 
