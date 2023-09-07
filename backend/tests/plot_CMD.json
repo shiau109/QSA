@@ -25,17 +25,17 @@
     "type": "3DScalar",
     "plot": [
         {
-            "name":"T1",
-            "info_type":"var",
-            "designation":"x"
-        },
-        {
-            "name":"RECORD_TIME_NS",
+            "name":"Frequency",
             "info_type":"var",
             "designation":"y"
         },
         {
-            "name":"I",
+            "name":"Flux-Bias",
+            "info_type":"var",
+            "designation":"x"
+        },
+        {
+            "name":"amplitude",
             "info_type":"data",
             "designation":"z"
         }
@@ -47,15 +47,29 @@
 }
 
 
-
+{
+    "var_name":"ROF",
+    "position":[0],
+    "axis":1
+}
 
 {
     "type": "2DBasic",
     "plot": [
         {
+            "name":"Frequency",
+            "info_type":"var",
+            "designation":"x"
+        },
+        {
+            "name":"amplitude",
+            "info_type":"data",
+            "designation":"y"
+        },
+        {
             "name":"I",
             "info_type":"data",
-            "designation":"x"
+            "designation":"y"
         },
         {
             "name":"Q",
@@ -64,6 +78,12 @@
         }
     ],
     "address": [
+        {
+            "var_name":"Flux-Bias",
+            "position":[0],
+            "axis":0
+        }
+
     ]
 
   }

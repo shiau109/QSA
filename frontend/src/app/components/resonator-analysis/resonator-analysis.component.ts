@@ -14,9 +14,8 @@ import { BackToPlotlyService } from 'src/app/services/back-to-plotly.service';
 })
 export class ResonatorAnalysisComponent {
   analysisReqForm = this.fb.group({
-    freq: ['',Validators.required],
-    dep: ['',Validators.required],
-    other_position: ['']
+    prePro_req: ['',Validators.required],
+    ana_req: ['',Validators.required],
   });
   constructor(  private fb:FormBuilder,
     private route: ActivatedRoute,

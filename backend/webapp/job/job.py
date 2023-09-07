@@ -33,18 +33,6 @@ class JobHeader(BaseModel):
     data_labels: list
 
 
-class PlotDataInfo(BaseModel):
-    name: str
-    axis: str
-
-
-class Plot1DReturn(BaseModel):
-    trace_name:list[str]
-    x: list[list[float]]
-    y: list[list[float]]
-
-
-
 class ExpData_Info( BaseModel ):
     configs: dict
     axes: list
@@ -77,11 +65,11 @@ async def get_job( job_ID: str ) -> dict:
     return job_info
 
 @router.post("/{job_ID}/preprocess", response_model=ExpData_Info)
-async def get_job_preprocess( job_ID: str, pProReq: list[PrecessCMD] ) -> ExpData_Info:
+async def get_job_preprocess( job_ID: str, prePro_req: list[PrecessCMD] ) -> ExpData_Info:
     
     job_data = get_job_expdata( job_ID )
     data_preProcessor = DataProcesser(job_data)
-    new_data = data_preProcessor.import_CMDs(pProReq)
+    new_data = data_preProcessor.import_CMDs(prePro_req)
     axis_infos = []
     for exp_var in job_data.exp_vars:
         axis_info = (exp_var[0],len(exp_var[1]))
@@ -95,14 +83,13 @@ async def get_job_preprocess( job_ID: str, pProReq: list[PrecessCMD] ) -> ExpDat
     return data_info
 
 @router.post("/{job_ID}/preview", response_model=Plot2DBasicReturn|Plot3DscalarReturn)
-async def get_job_preview( job_ID: str, pReq: PlotRequest, pProReq: list[PrecessCMD] ) -> dict:
-    print(job_ID,pReq,pProReq)
+async def get_job_preview( job_ID: str, polt_req: PlotRequest, prePro_req: list[PrecessCMD] ) -> dict:
     job_data = get_job_expdata( job_ID )
     # Pre process
     data_preProcessor = DataProcesser(job_data)
-    new_data = data_preProcessor.import_CMDs(pProReq)
+    new_data = data_preProcessor.import_CMDs(prePro_req)
 
-    plot_package = plot_data(new_data, pReq)
+    plot_package = plot_data(new_data, polt_req)
     return plot_package
 
 @router.post("/{job_ID}/download/rawdata", response_class=FileResponse)

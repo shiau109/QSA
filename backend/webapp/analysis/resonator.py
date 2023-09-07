@@ -11,12 +11,26 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-from internal.access import get_db_info
+from internal.access import get_db_info, get_job_expdata
+from expData.data_process import PrecessCMD, DataProcesser
 
 
-@router.get("/resonator_fit", tags=["analysis"], response_model=str)
-async def fit_qFactor( name: str | None = None ):
+class analysisCMD( BaseModel ):
+    configs: dict
+    axes: list
+    data_labels: list[str]
 
-    mySQL = get_db_info()
+class ResonatorFitCMD( BaseModel ):
+    jobid: str
+    model: str
+    freq_axis: str
     
+
+@router.post("/resonator_fit", tags=["analysis"], response_model=str)
+async def fit_qFactor( prePro_req: list[PrecessCMD], ana_req: ResonatorFitCMD ):
+
+    job_data = get_job_expdata( ana_req.jobid )
+    data_preProcessor = DataProcesser(job_data)
+    new_data = data_preProcessor.import_CMDs(prePro_req)
+
     return name

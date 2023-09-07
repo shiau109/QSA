@@ -4,6 +4,7 @@ from typing import TypedDict, Union
 
 from pydantic import BaseModel
 
+from numpy import reshape
 class PlotDesination( TypedDict ):
     name:str
     info_type:str
@@ -65,15 +66,25 @@ def plot_2DBasic( data:ExpData, plot_request:PlotRequest )->Plot2DBasicReturn:
     if x_type == "var" and y_type == "data":
         plot_output = {
             "trace_name":[],
-            "x":[selected_data.exp_vars[0][1].tolist()],
+            "x":[selected_data.exp_vars[-1][1].tolist()],
             "y":[]
         }
+        
         for plot_des in plot_request.plot:
             if plot_des["designation"] == "y":
                 name = plot_des["name"]
-                plot_output["trace_name"].append(name)
-                plot_output["y"].append(selected_data.get_data(name).tolist())
-    
+                
+                print(selected_data.dimension)
+                if selected_data.dimension == 1:
+                    plot_output["trace_name"].append(name)
+                    plot_output["y"].append(selected_data.get_data(name).tolist())
+                else:
+                    mult_1darr = selected_data.get_data(name)
+                    mult_1darr = mult_1darr.reshape(-1, mult_1darr.shape[-1])
+                    for i in range(mult_1darr.shape[0]):
+                        plot_output["trace_name"].append(name+str(i))
+                        plot_output["y"].append(mult_1darr[i].tolist())
+
     elif x_type == "data" and y_type == "data":
         plot_output = {
             "trace_name":["data"],
@@ -81,7 +92,7 @@ def plot_2DBasic( data:ExpData, plot_request:PlotRequest )->Plot2DBasicReturn:
             "y":[selected_data.get_data(y_name).tolist()]
         }
 
-    # print(plot_output["y"])
+    print(len(plot_output["y"]))
     return plot_output
 
 def plot_3Dscalar( data:ExpData, plot_request:PlotRequest ) -> Plot3DscalarReturn:

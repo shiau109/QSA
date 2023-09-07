@@ -109,6 +109,7 @@ class SingleQubitShape(PyqumShaper):
 
     def import_header( self, header ):
         settings = []
+
         if self.check_header( header ):
             settings.extend(self.perimeter_praser(self.raw_info["perimeter"]) )
         return settings 
@@ -116,16 +117,16 @@ class SingleQubitShape(PyqumShaper):
     def perimeter_praser( self, perimeter ):
         p_key = perimeter.keys()
         settings = []
-                    
+            
         if "R-JSON" in p_key:
             r_json = literal_eval( perimeter["R-JSON"] )
             for name, str_cmd in r_json.items():
                 setting_obj = SeriesStr( str_cmd )
                 settings.append( (name, np.array(setting_obj.data) ) )
-        # print(settings)
         
         if "READOUTYPE" in p_key:
             readout_mode = perimeter["READOUTYPE"]
+            print(f"readout_mode {readout_mode}")
             match readout_mode:
                 case "continuous":
                     record_name = "RECORD_TIME_NS"
@@ -133,6 +134,12 @@ class SingleQubitShape(PyqumShaper):
                     time_res = int(perimeter["TIME_RESOLUTION_NS"])
                     record_length = int(record_time//time_res)
                     setting_val = np.linspace(0, record_time, record_length,endpoint=False)
+                case "rt-wfm-ave":
+                    record_name = "RECORD_TIME_NS"
+                    record_time = int(perimeter["RECORD_TIME_NS"])
+                    time_res = int(perimeter["TIME_RESOLUTION_NS"])
+                    record_length = int(record_time//time_res)
+                    setting_val = np.linspace(0, record_time, record_length,endpoint=False)                
                 case "one-shot":
                     record_name = "RECORD-SUM"
                     shot_times = int(perimeter["RECORD-SUM"])

@@ -50,10 +50,10 @@ export class JobService {
     );
   }
 
-  getJobPreview(jobId: string, pReq: PlotRequest, pProReq: PreProcessRequest[]): Observable<any> {
+  getJobPreview(jobId: string, polt_req: PlotRequest, prePro_req: PreProcessRequest[]): Observable<any> {
     const url = `${this.dataUrl}/job/${jobId}/preview`;
     console.log('service getJobPreview')
-    return this.http.post<any>(url,{pReq,pProReq}).pipe(
+    return this.http.post<any>(url,{polt_req,prePro_req}).pipe(
       tap(_ => this.log(`fetched job ID =${jobId}`)),
       catchError(this.handleError<any>(`Job ID ${jobId} return error`))
     );
@@ -62,11 +62,6 @@ export class JobService {
   downloadJobRawdata(jobId: string): Observable<any> {
     const url = `${this.dataUrl}/job/${jobId}/download/rawdata`;
     let httpOptions = { 
-      // headers: new HttpHeaders({
-      //   'Access-Control-Allow-Origin': '*',
-      //   'Access-Control-Allow-Headers': '*',
-      //   'Access-Control-Expose-Headers': '*',
-      // }),
       observe: 'response' as 'body', 
       responseType: "blob" as "json"
     }
@@ -79,33 +74,7 @@ export class JobService {
       catchError(this.handleError<any>(`Job ID ${jobId} return error`))
     );
   };
-  /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
-  // getJob1Dpreview(jobId: string, pReq: Plot1DFuncRequest, pProReq: PreProcessRequest[]): Observable<any> {
-  //   const url = `${this.dataUrl}/job/${jobId}/preview1D`;
-  //   // console.log({pReq,pProReq})
-  //   return this.http.post<any>(url,{pReq,pProReq}).pipe(
-  //     tap(_ => this.log(`fetched job ID =${jobId}`)),
-  //     catchError(this.handleError<any>(`Job ID ${jobId} return error`))
-  //   );
-  // }
 
-  // /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
-  // getJobPreviewParEq(jobId: string, pReq: PlotParEqRequest): Observable<any> {
-  //   const url = `${this.dataUrl}/job/${jobId}/previewParEq`;
-  //   return this.http.post<any>(url,pReq).pipe(
-  //     tap(_ => this.log(`fetched job ID =${jobId}`)),
-  //     catchError(this.handleError<any>(`Job ID PreviewParEq ${jobId} return error`))
-  //   );
-  // }
-
-  // /** GET job by jobid. Request for Plot1DFunc Will 404 if jobid not found */
-  // getJobPreviewContour(jobId: string, pReq: PlotContourRequest): Observable<any> {
-  //   const url = `${this.dataUrl}/job/${jobId}/previewContour`;
-  //   return this.http.post<any>(url,pReq).pipe(
-  //     tap(_ => this.log(`fetched job ID =${jobId}`)),
-  //     catchError(this.handleError<any>(`Job ID previewContour ${jobId} return error`))
-  //   );
-  // }
   /** Log a SampleService message with the MessageService */
   private log(message: string) {
     this.messageService.add(`SampleService: ${message}`);
