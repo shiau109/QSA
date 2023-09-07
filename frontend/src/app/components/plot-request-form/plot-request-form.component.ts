@@ -21,9 +21,7 @@ export class PlotRequestFormComponent {
     CMDs: '{}',
   });
   get_values = Object.values;
-  // pReq_F1:boolean;
-  // pReq_PE:boolean;
-  // pReq_F2:boolean;
+
   graph: any;
   show_plot:boolean;
 
