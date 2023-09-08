@@ -14,4 +14,7 @@ pip install -e ..\Dependency\expData
 ECHO Installing DB_reader
 pip install -e ..\Dependency\DB_reader
 
+ECHO Installing resonator_tools
+pip install -e ..\Dependency\resonator_tools
+
 PAUSE

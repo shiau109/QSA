@@ -33,4 +33,4 @@ async def fit_qFactor( prePro_req: list[PrecessCMD], ana_req: ResonatorFitCMD ):
     data_preProcessor = DataProcesser(job_data)
     new_data = data_preProcessor.import_CMDs(prePro_req)
 
-    return name
+    return ana_req.jobid
