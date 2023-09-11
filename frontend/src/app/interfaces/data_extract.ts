@@ -49,3 +49,11 @@ export interface PreProcessRequest{
   output: string[];
 
 }
+
+
+export interface AnaRequest_resonator{
+  model: string;
+  jobid: string;
+  freq_axis: string;
+
+}

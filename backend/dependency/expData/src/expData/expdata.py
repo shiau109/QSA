@@ -143,7 +143,7 @@ class ExpData:
 
     def get_axis_name( self, axis_idx = None )->int:
         """
-        find axis indexby the setting name.
+        find axis index by the setting name.
         """
         setting_dim = len(self.exp_vars)
         if axis_idx is None:
@@ -274,6 +274,9 @@ class ExpData:
         return sub_expData
 
     def get_data( self, name:str )->np.ndarray:
+        """
+        Get data by the name
+        """
         data_names = self.data.keys()
         if name in data_names:
             return self.data[name]
@@ -281,6 +284,20 @@ class ExpData:
             print("No data names in {name}")
             return None
 
+
+    def get_var_vals( self, name:str )->np.ndarray:
+        """
+        Get data by the name
+        """
+        var_idx = self.get_axis_idx(name)
+        if var_idx != None:
+            if self.__is_linked_var(var_idx):
+                linked_var = self.exp_vars[var_idx]
+                link_idx = mylist.index(element)
+                return linked_var[1][link_idx]
+            else:
+                var = self.exp_vars[var_idx]
+                return var[1]
     # def to_npz( output ):
 
 

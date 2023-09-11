@@ -19,7 +19,6 @@ export class JobDetailComponent {
   // show_plot_1D: boolean;
   show_pReq_form: boolean;
   preProcess_CMDs: [];
-  name = new FormControl('');
   constructor(
     private route: ActivatedRoute,
     private jobService: JobService,
@@ -68,8 +67,6 @@ export class JobDetailComponent {
     const jobid = this.route.snapshot.paramMap.get('jobId');
     if (jobid!= null){
       this.jobService.downloadJobRawdata(jobid).subscribe((res) => {
-        console.log( res.body);
-        console.log(res.headers.get('content-disposition').split('"'))
         let filename = res.headers.get('content-disposition').split('"')[1]
         console.log("download file", filename);
         let blob: Blob = new Blob([res.body]); // , { type: "application/pdf" });

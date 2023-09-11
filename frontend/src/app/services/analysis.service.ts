@@ -5,18 +5,18 @@ import { Observable, of } from 'rxjs';
 import { Sample } from '../interfaces/sample';
 import { JobHeader, JobSummary } from '../interfaces/job_info';
 import { 
-  PreProcessRequest,
-  PlotRequest } from '../interfaces/data_extract';
+  AnaRequest_resonator,
+  PreProcessRequest
+  } from '../interfaces/data_extract';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { catchError, map, tap } from 'rxjs/operators';
-import { JobFilter } from '../interfaces/filter';
 
 @Injectable({
   providedIn: 'root'
 })
-export class JobService {
+export class AnalysisService {
 
   private dataUrl = 'http://192.168.1.135:7999';  // URL to web api
   httpOptions = {
@@ -28,35 +28,20 @@ export class JobService {
     private messageService: MessageService) { }
 
   /** GET Jobs from the server */
-  getJobs(): Observable<JobSummary[]> {
-    // console.log(this.http.get(this.dataUrl) )
-    return this.http.get<JobSummary[]>(this.dataUrl)
+  get_resonator_qfactor( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<JobSummary[]> {
+    const url = `${this.dataUrl}/analysis/resonator_fit`;
+    console.log({prePro_req, ana_req})
+    return this.http.post<any>( url,{prePro_req, ana_req})
       .pipe(
-        tap(_ => this.log('fetched heroes')),
-        catchError(this.handleError<JobSummary[]>('getHeroes', []))
+        tap(_ => this.log('fetched analysis')),
+        catchError(this.handleError<any>('get_resonator_qfactor', []))
       );
       
   }
 
-  /** GET job by jobid. Will 404 if jobid not found */
-  getJobDetail(jobId: string): Observable<JobHeader> {
-    const url = `${this.dataUrl}/job/${jobId}`;
-    return this.http.get<JobHeader>(url).pipe(
-      tap(_ => this.log(`fetched job ID =${jobId}`)),
-      catchError(this.handleError<JobHeader>(`Job ID ${jobId} return error`))
-    );
-  }
 
-  getJobPreview(jobId: string, polt_req: PlotRequest, prePro_req: PreProcessRequest[]): Observable<any> {
-    const url = `${this.dataUrl}/job/${jobId}/preview`;
-    console.log('service getJobPreview')
-    return this.http.post<any>(url,{polt_req,prePro_req}).pipe(
-      tap(_ => this.log(`fetched job ID =${jobId}`)),
-      catchError(this.handleError<any>(`Job ID ${jobId} return error`))
-    );
-  }
 
-  downloadJobRawdata(jobId: string): Observable<any> {
+  downloadAnalysisResult(jobId: string): Observable<any> {
     const url = `${this.dataUrl}/job/${jobId}/download/rawdata`;
     let httpOptions = { 
       observe: 'response' as 'body', 
@@ -74,7 +59,7 @@ export class JobService {
 
   /** Log a SampleService message with the MessageService */
   private log(message: string) {
-    this.messageService.add(`SampleService: ${message}`);
+    this.messageService.add(`AnalysisService: ${message}`);
   }
 
   /**
@@ -98,17 +83,5 @@ export class JobService {
     };
   }
 
-  /* GET samples whose serialNum contains search term */
-  filterJobs( filter: JobFilter ): Observable<JobSummary[]> {
-    // if (!filter.trim()) {
-    //   // if not search term, return empty hero array.
-    //   return of([]);
-    // }
-    // console.log(`${this.dataUrl}/search/job`)
-    return this.http.post<any>(`${this.dataUrl}/search/job`,filter).pipe(
-      tap(_ => this.log(`search`)),
-      catchError(this.handleError<JobSummary[]>(`search error`))
-    );
-  }
 
 }

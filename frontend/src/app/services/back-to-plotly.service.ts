@@ -8,6 +8,21 @@ export class BackToPlotlyService {
 
   constructor() { }
 
+  data1DtTraces_dict( dict:any, x:string ){
+    console.log(Object.keys(dict));
+    let tr_names = Object.keys(dict)
+    let traces = tr_names.map( (data_label,i) => {
+      let trace = {
+        x: dict[x],    
+        y: dict[data_label],   
+        mode:"markers",
+        name: data_label,
+        // type: "scatter",  
+      };
+      return trace;
+    });
+    return traces
+  }
   data1DTraces(tr_names: string[], x:number[][], y:number[][]){
     let traces = {}
     if ( x.length == 1 ){
