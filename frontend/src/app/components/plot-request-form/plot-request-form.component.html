@@ -9,3 +9,31 @@
 <ng-container *ngIf="show_plot">
 <plotly-plot [data]="graph.data"></plotly-plot>
 </ng-container>
+
+<!-- code for generating json CMD_plot -->
+<h2>Choose Plot/Parameters/Addresses (+ shift for multiple choices)</h2>
+<form #CMD="ngForm">
+  <select name="type" ngModel>
+    <option value="" disabled>Choose Plot type</option>
+    <option *ngFor="let type of types" [ngValue]="type.name">
+      {{ type.name }}
+    </option>
+  </select>
+
+  <select multiple name="plot" ngModel style="height:150px;">
+    <option value="" disabled>Choose Parameters</option>
+    <option *ngFor="let plot of plots" [ngValue]="plot">
+      {{ plot.name  + "_" + plot.designation }}
+    </option>
+  </select>
+
+  <select multiple name="address" ngModel>
+    <option value="" disabled>Choose Address</option>
+    <option *ngFor="let address of addresses" [ngValue]="address">
+      {{address.var_name}}
+    </option>
+  </select>
+</form>
+
+<!-- doublecheck for  json CMD_plot -->
+<h3>{{ CMD.value | json }}</h3>

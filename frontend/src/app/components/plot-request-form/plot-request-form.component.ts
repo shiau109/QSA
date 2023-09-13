@@ -211,4 +211,24 @@ export class PlotRequestFormComponent {
   //   console.log(pReq)
      
   // }
+
+  // json objects for CMD_plot
+  types = [
+    { name: '2DBasic' },
+    { name: '3DScalar' }
+  ];
+
+  plots = [
+    { name: 'RECORD_TIME_NS', info_type: 'var', designation: 'x' },
+    { name: 'I', info_type: 'data', designation: 'y' },
+    { name: 'Q', info_type: 'data', designation: 'y' },
+    { name: 'ROF', info_type: 'var', designation: 'y' },
+    { name: 'I', info_type: 'data', designation: 'z' },
+    { name: 'Q', info_type: 'data', designation: 'z' }
+  ];
+
+  addresses = [
+    { var_name: 'ROF', position: [0], axis: 1 },
+    { var_name: 'ROL', position: [0], axis: 1 }
+  ];
 }
