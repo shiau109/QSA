@@ -41,8 +41,8 @@ export class AnalysisService {
 
 
 
-  downloadAnalysisResult(jobId: string): Observable<any> {
-    const url = `${this.dataUrl}/job/${jobId}/download/rawdata`;
+  downloadAnalysisResult(): Observable<any> {
+    const url = `${this.dataUrl}/analysis/resonator_fit/download`;
     let httpOptions = { 
       observe: 'response' as 'body', 
       responseType: "blob" as "json"
@@ -52,8 +52,8 @@ export class AnalysisService {
    
     return this.http.post<any>(url,{},httpOptions).pipe(
       // res.set('Access-Control-Allow-Headers', '*');
-      tap(_ => this.log(`fetched job ID =${jobId}`)),
-      catchError(this.handleError<any>(`Job ID ${jobId} return error`))
+      tap(_ => this.log(`fetched resonator_fit/download`)),
+      catchError(this.handleError<any>(`resonator_fit/download return error`))
     );
   };
 

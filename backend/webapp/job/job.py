@@ -94,17 +94,16 @@ async def get_job_preview( job_ID: str, polt_req: PlotRequest, prePro_req: list[
 
 @router.post("/{job_ID}/download/rawdata", response_class=FileResponse)
 async def get_download_rawdata( job_ID: str ) -> dict:
-    print(f"Download raw data with jobID {job_ID}")
     db_info = get_db_info()
 
     from pathlib import Path
 
     rawdata_path = Path(db_info.jobid_search_pyqum( job_ID ))
+    print(f"Download raw data with jobID {job_ID} from {rawdata_path}")
 
     # path = Path(rawdata_path)
     if "pyqum" in rawdata_path.suffix:
         filename = f"{job_ID}.pyqum"
     else:  
         filename = job_ID+rawdata_path.suffix
-    print(rawdata_path)
     return FileResponse(rawdata_path, filename=filename)

@@ -41,6 +41,21 @@ export class ResonatorAnalysisComponent {
         data: fit_result_traces,
         layout: {width: 320, height: 240, title: 'Fit result'}
       };
-  });
+    });
+  }
+
+  download(){
+
+    this.analysisService.downloadAnalysisResult().subscribe((res) => {
+      let filename = res.headers.get('content-disposition').split('"')[1]
+      console.log("download file", filename);
+      let blob: Blob = new Blob([res.body]); // , { type: "application/pdf" });
+      let downloadUrl = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      link.click();
+
+    });
   }
 }

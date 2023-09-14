@@ -49,7 +49,6 @@ def cavityQ_fit( freq:np.ndarray, s21:np.ndarray, power:np.ndarray=None ):
         fit_results["A"] = amp_norm
         fit_results["alpha"] = alpha
         fit_results["delay"] = delay
-
         if with_power:
             fit_results["photons"] = myResonator.get_photons_in_resonator(power[xi])
         fitCurves.append(myResonator.z_data_sim)
