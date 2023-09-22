@@ -29,7 +29,6 @@ import { PlotRequestFormComponent } from './components/plot-request-form/plot-re
 import { AnalyzerHomeComponent } from './components/analyzer-home/analyzer-home.component';
 import { ResonatorAnalysisComponent } from './components/resonator-analysis/resonator-analysis.component';
 import { PreprocessRequestFormComponent } from './components/preprocess-request-form/preprocess-request-form.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
