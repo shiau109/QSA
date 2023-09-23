@@ -105,7 +105,7 @@ export class JobService {
     //   return of([]);
     // }
     // console.log(`${this.dataUrl}/search/job`)
-    return this.http.post<any>(`${this.dataUrl}/search/job`,filter).pipe(
+    return this.http.post<any>(`${this.dataUrl}/searching/job`,filter).pipe(
       tap(_ => this.log(`search`)),
       catchError(this.handleError<JobSummary[]>(`search error`))
     );
