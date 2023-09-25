@@ -8,6 +8,8 @@ import { JobDetailComponent } from './components/job-detail/job-detail.component
 import { JobFilterComponent } from './components/job-filter/job-filter.component';
 import { AnalyzerHomeComponent } from './components/analyzer-home/analyzer-home.component';
 import { ResonatorAnalysisComponent } from './components/resonator-analysis/resonator-analysis.component';
+import { SingleShotDistributionComponent } from './components/single-shot-distribution/single-shot-distribution.component';
+
 const routes: Routes = [
   { path: '', redirectTo: '/search', pathMatch: 'full' },
   { path: 'search', component: SearchComponent },
@@ -15,6 +17,8 @@ const routes: Routes = [
   { path: 'job/:jobId', component: JobDetailComponent },
   { path: 'analyzer', component: AnalyzerHomeComponent },
   { path: 'analyzer/resonator_analysis', component: ResonatorAnalysisComponent },
+  { path: 'analyzer/single_shot_distribution', component: SingleShotDistributionComponent },
+
 
 ];
 

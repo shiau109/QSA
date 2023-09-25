@@ -29,6 +29,7 @@ import { PlotRequestFormComponent } from './components/plot-request-form/plot-re
 import { AnalyzerHomeComponent } from './components/analyzer-home/analyzer-home.component';
 import { ResonatorAnalysisComponent } from './components/resonator-analysis/resonator-analysis.component';
 import { PreprocessRequestFormComponent } from './components/preprocess-request-form/preprocess-request-form.component';
+import { SingleShotDistributionComponent } from './components/single-shot-distribution/single-shot-distribution.component';
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { PreprocessRequestFormComponent } from './components/preprocess-request-
     AnalyzerHomeComponent,
     ResonatorAnalysisComponent,
     PreprocessRequestFormComponent,
+    SingleShotDistributionComponent,
   ],
   bootstrap: [ AppComponent ]
 })
