@@ -1,0 +1,1 @@
+Package for distinguish qubit state from single shot measurement
