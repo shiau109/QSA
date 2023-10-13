@@ -40,6 +40,19 @@ export class AnalysisService {
   }
 
 
+  /** GET Jobs from the server */
+  get_state_distribution_paras( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<JobSummary[]> {
+    const url = `${this.dataUrl}/analysis/resonator_fit`;
+    console.log({prePro_req, ana_req})
+    return this.http.post<any>( url,{prePro_req, ana_req})
+      .pipe(
+        tap(_ => this.log('fetched analysis')),
+        catchError(this.handleError<any>('get_resonator_qfactor', []))
+      );
+      
+  }
+
+
 
   downloadAnalysisResult(): Observable<any> {
     const url = `${this.dataUrl}/analysis/resonator_fit/download`;

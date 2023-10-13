@@ -7,7 +7,7 @@ from expData.expdata import ExpData
 import numpy as np
 
 router = APIRouter(
-    prefix="/analysis",
+    prefix="/analysis/resonator",
     # tags=["myapp"],
     dependencies=[],
     responses={404: {"description": "Not found"}},
@@ -18,11 +18,12 @@ from expData.data_process import PrecessCMD, DataProcesser
 from pandas import DataFrame
 from fastapi.responses import FileResponse
 
+
 class analysisCMD( BaseModel ):
     configs: dict
     axes: list
     data_labels: list[str]
-
+    
 class ResonatorFitCMD( BaseModel ):
     jobid: str
     model: str
@@ -88,4 +89,5 @@ async def download_qFactor() -> dict:
 #     raw_dfs.extend(part_raw_dfs)
 #     # plot_cavityS21_fitting( freq, s21, fitCurves, input_power, title=fn )
 #     plot_cavityS21_fitting( freq, s21, fitCurves, input_power, title=fn, output_fd=power_dep_folder )
+
 

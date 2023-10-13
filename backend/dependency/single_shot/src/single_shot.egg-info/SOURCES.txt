@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/single_shot/__init__.py
+src/single_shot/distribution_model.py
+src/single_shot.egg-info/PKG-INFO
+src/single_shot.egg-info/SOURCES.txt
+src/single_shot.egg-info/dependency_links.txt
+src/single_shot.egg-info/top_level.txt

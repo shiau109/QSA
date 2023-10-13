@@ -8,7 +8,7 @@ from internal import admin
 from searching import searching
 from job import job
 from sample import sample
-from analysis import resonator
+from analysis import resonator, single_shot
 
 # app = FastAPI(dependencies=[Depends(get_query_token)])
 
@@ -19,6 +19,8 @@ app = FastAPI()
 # app.include_router(items.router)
 app.include_router(job.router)
 app.include_router(resonator.router)
+app.include_router(single_shot.router)
+
 app.include_router(searching.router)
 app.include_router(sample.router)
 
