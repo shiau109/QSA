@@ -7,6 +7,8 @@ SET ENVNAME=FAST
 call C:\ProgramData\Anaconda3\Scripts\activate.bat %ENVNAME%
 
 
+conda env create -f environment.yml
+
 :: qspp (editable installation, files are in PYQUM)
 ECHO Installing ExpData
 pip install -e ..\Dependency\expData
