@@ -33,7 +33,6 @@ class StateDistCMD( BaseModel ):
 download_folder = r"download_temp/"
 state_dist_fn = r"state_dist.npz"
 
-from single_shot.distribution_model import GMM_model
 @router.post("/state_distinguishability", tags=["single_shot"], response_model=dict)
 async def train_model( prePro_req: list[PrecessCMD], ana_req: StateDistCMD ):
 
@@ -43,14 +42,17 @@ async def train_model( prePro_req: list[PrecessCMD], ana_req: StateDistCMD ):
     para_dict = {}
     match ana_req.model:
         case "GMM":
+            from single_shot.distribution_model import GMM_model
+
             training_data = np.array([new_data.get_data("I").flatten(), new_data.get_data("Q").flatten()])
             my_model = GMM_model()
             my_model.training(training_data.transpose())
             para_dict = my_model.output_paras()
-            print(para_dict)
             for k, v in para_dict.items():
                 para_dict[k] = para_dict[k].tolist()
-            print(para_dict)
+
+            
+            
 
         case _:
             pass
