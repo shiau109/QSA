@@ -8,7 +8,7 @@ call C:\ProgramData\Anaconda3\Scripts\activate.bat %ENVNAME%
 @REM cd C:\Users\shiau\CAS\backend\webapp
 
 
-uvicorn main:app --reload --host 192.168.1.135 --port 7999 
+uvicorn main:app --reload --host 0.0.0.0 --port 7999 
 
 
 
