@@ -26,6 +26,14 @@ idata = data[idata_name]
 qdata = data[qdata_name]
 axis_0 = data[ax_name[0]]
 axis_1 = data[ax_name[1]+str(qubit_idx)]
+if y_value == None:
+    y_idx = None
+else:
+    y_idx = np.searchsorted(axis_0,y_value)
+    idata = idata.transpose()[y_idx]
+    qdata = qdata.transpose()[y_idx]
+
+    
 match m_type:
     case "A":
         measurement = np.sqrt(idata**2+qdata**2)
@@ -36,10 +44,7 @@ match m_type:
     case "Q":
         measurement = qdata
 
-if y_value == None:
-    y_idx = None
-else:
-    y_idx = np.searchsorted(axis_0,y_value)
+
 
 
 import plotly.graph_objects as go
@@ -52,7 +57,7 @@ if y_idx == None:
     scalar_3d_fig.show()
 else:
     line_2d_fig = go.Figure(data=go.Scatter(
-                x=axis_1, y=measurement.transpose()[y_idx], 
+                x=axis_1, y=measurement, 
                 mode='lines+markers'))
     line_2d_fig.show()
 

@@ -39,7 +39,7 @@ async def train_model( prePro_req: list[PrecessCMD], ana_req: StateDistCMD ):
     job_data = get_job_expdata( ana_req.jobid )
     data_preProcessor = DataProcesser(job_data)
     new_data = data_preProcessor.import_CMDs(prePro_req)
-    para_dict = {}
+    report_dict = {}
     match ana_req.model:
         case "GMM":
             from single_shot.distribution_model import GMM_model
@@ -47,15 +47,28 @@ async def train_model( prePro_req: list[PrecessCMD], ana_req: StateDistCMD ):
             training_data = np.array([new_data.get_data("I").flatten(), new_data.get_data("Q").flatten()])
             my_model = GMM_model()
             my_model.training(training_data.transpose())
+
             para_dict = my_model.output_paras()
+            report_dict["paras"] = para_dict
+
             for k, v in para_dict.items():
                 para_dict[k] = para_dict[k].tolist()
 
-            
-            
 
+            data_dict = {
+                "I":training_data[0].tolist(),
+                "Q":training_data[1].tolist(),
+                "Label": my_model.predict(training_data.transpose().tolist())
+            }
+            df = pd.DataFrame( data=data_dict )
+
+            report_dict = {
+                "IQ_plane":data_dict
+                "analysis_result":
+                "histogram":
+            }
         case _:
             pass
 
 
-    return para_dict
+    return report_dict
