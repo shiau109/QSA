@@ -45,6 +45,5 @@ df["label"] = df["label"].astype(str)
 # print(df["label"].values[0])
 # print(df["label"].values[1])
 
-print(color_discrete_map[df["label"].values[0]])
 fig = px.scatter(df, x="I", y="Q",  color="label", color_discrete_sequence=["blue","red"])
 fig.show()

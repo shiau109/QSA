@@ -70,6 +70,20 @@ export class AnalysisService {
     );
   };
 
+  getTrainingData( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<any>{
+    const url = `${this.dataUrl}/analysis/single_shot/state_distinguishability/plot`;
+    let httpOptions = { 
+      responseType: "blob" as "blob" 
+    }
+    console.log('service getTrainingData');
+
+    return this.http.post(url, {prePro_req, ana_req}, httpOptions).pipe(
+      tap(_ => this.log('fetched analysis')),
+      catchError(this.handleError<any>('get_resonator_qfactor', []))
+    );
+
+  };
+
   /** Log a SampleService message with the MessageService */
   private log(message: string) {
     this.messageService.add(`AnalysisService: ${message}`);

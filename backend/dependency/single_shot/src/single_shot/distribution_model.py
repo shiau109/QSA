@@ -17,7 +17,6 @@ class GMM_model():
         """
         self.__training_data = data
         self.gmm.fit(data)
-        self.__training_data = data
         # return self
 
     def output_paras( self ):
