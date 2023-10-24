@@ -9,12 +9,12 @@ sys.path.append(str(new_path))
 
 from src.single_shot.distribution_model import *
 
-pos = np.array([[0,0], [0,1]])
+pos = np.array([[0,0.3], [1,0.7]])
 prepare_0 = [0.95,0.05]
 prepare_1 = [0.20,0.80]
 
 
-noise = 0.05
+noise = 0.2
 total_points = 1000
 preapre_0_data = get_sim_data( pos, prepare_0, noise, total_points )    
 preapre_1_data = get_sim_data( pos, prepare_1, noise, total_points )  

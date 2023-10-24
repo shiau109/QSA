@@ -15,7 +15,7 @@ class GMM_model():
         input numpy array with shape (n,2)
         n is point number
         """
-        self.__training_data = data
+        self.training_data = data
         self.gmm.fit(data)
         # return self
 
