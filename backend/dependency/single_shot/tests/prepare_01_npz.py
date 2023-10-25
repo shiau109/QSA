@@ -14,8 +14,8 @@ prepare_0 = [0.95,0.05]
 prepare_1 = [0.20,0.80]
 
 
-noise = 0.2
-total_points = 1000
+noise = 0.4
+total_points = 10000
 preapre_0_data = get_sim_data( pos, prepare_0, noise, total_points )    
 preapre_1_data = get_sim_data( pos, prepare_1, noise, total_points )  
 print(preapre_0_data.shape)

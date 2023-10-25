@@ -7,9 +7,9 @@ import pathlib
 # print(pathlib.Path(__file__).parent.resolve())
 new_path = pathlib.Path(__file__).parent.resolve()
 sys.path.append(str(new_path))
-data = np.load(str(new_path)+r'\20231012-172907_06_resonator_spectroscopy_vs_flux.npz')
+data = np.load(str(new_path)+r'\20231014-015452_11_IQ_blobs.npz', allow_pickle=True)
 
-# print(len(data.keys()), len(data["Qi_dia_corr"]))
+print(len(data.keys()))
 for label in data.keys():
     print(f"{label} with shape {data[label].shape}")
 

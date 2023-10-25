@@ -17,6 +17,7 @@ class GMM_model():
         """
         self.training_data = data
         self.gmm.fit(data)
+        self.gmm.weights_ = [0.5,0.5]
         # return self
 
     def output_paras( self ):
@@ -50,8 +51,8 @@ class GMM_model():
         n is point number
         """
         self.__input_data = data
-        self.__predict_lable = self.gmm.predict( data )
-        return self.__predict_lable
+        self.__predict_label = self.gmm.predict( data )
+        return self.__predict_label
 
     def get_label( self ):
         """
@@ -59,11 +60,11 @@ class GMM_model():
         n is point number
         """
 
-        return self.__predict_lable
+        return self.__predict_label
 
     def get_distribution( self ):
 
-        return np.bincount(self.__predict_lable)
+        return np.bincount(self.__predict_label)
 
 
 ### KMeans_model Not finished yet
