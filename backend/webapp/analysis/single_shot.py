@@ -74,7 +74,7 @@ state_dist_fn = r"state_dist.npz"
 
 from fastapi import File, UploadFile
 
-@router.post('/state_distinguishability/uploadfile')
+@router.post('/state_distinguishability/uploadfile', tags=["analysis"])
 def upload_file( file: UploadFile, background_tasks: BackgroundTasks ):
     """
     Only can give one qubit analysis yet.
@@ -321,8 +321,8 @@ def make_distribution( mu, sigma, data, prepare_state:int, ax):
     model.set_param_hint('g1_center',value=mu[1], vary=False)
     model.set_param_hint('g0_amplitude',min=0, max=est_peak_h*2, vary=True)
     model.set_param_hint('g1_amplitude',min=0, max=est_peak_h*2, vary=True)
-    model.set_param_hint('g0_sigma',value=sigma, vary=False)
-    model.set_param_hint('g1_sigma',value=sigma, vary=False)
+    model.set_param_hint('g0_sigma',value=sigma, vary=True)
+    model.set_param_hint('g1_sigma',value=sigma, vary=True)
 
     params = model.make_params()
     results = model.fit(hist,params,x=bin_center)

@@ -14,15 +14,16 @@ print(len(data.keys()))
 for label in data.keys():
     print(f"{label} with shape {data[label].shape}")
     shot_num = data[label].shape[-1]
-output_array = np.empty([2,2,shot_num])
 
+
+output_array = np.empty([2,2,shot_num])
 qubit_name = "q4"
-prepare_state = ["e","g"]
+prepare_state = ["g","e"]
 measurement = ["I","Q"]
 for i, ps in enumerate(prepare_state):
     for j, m in enumerate(measurement):
         label = f"{m}_{ps}_{qubit_name}"
-        output_array[i][j] = data[label]
+        output_array[i][j] = data[label]*1000
 print(output_array.shape)
 
 # test_data = np.empty(200000)
