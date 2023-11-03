@@ -36,7 +36,7 @@ I0 = float(a[100,1])
 Q0 = float(a[100,2])
 xdata = project_line(I0, Q0, I1, Q1)[:,0]/10**6
 ydata = project_line(I0, Q0, I1, Q1)[:,1]
-print(xdata)
+# print(xdata)
 plt.plot(xdata,ydata)
 
 
