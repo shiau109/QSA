@@ -1,6 +1,7 @@
-<p>single-shot-distribution works!</p>
-
+<h1>single-shot-distribution</h1>
 <div [formGroup]="ana_ReqForm">
+    <p>Analysis from database</p>
+
     <label for="prePro_req">prePro_req: </label>
     <input id="prePro_req" type="text" formControlName="prePro_req">
   
@@ -8,7 +9,21 @@
     <input id="ana_req" type="text" formControlName="ana_req">
 
     <button type="submit" (click)="this.do_analysis()" [disabled]="!ana_ReqForm.valid">Analysis</button>
-</div>
-<button type="submit" (click)="this.download()" >Download</button>
+    <button type="submit" (click)="this.download()" >Download</button>
 
-<plotly-plot [data]="graph.data"></plotly-plot>
+</div>
+<div>
+    <p>Analysis from upload file</p>
+    <input type="file" class="file-upload" onchange="console.log(event.target.files)">
+    <button type="submit" (click)="this.do_analysis()">Analysis</button>
+</div>
+
+<div>
+    <p>Analysis Result</p>
+
+    <ng-container *ngIf="show_plot">
+        <img id="myimage" [src]='imageSrc' />
+    </ng-container>
+</div>
+<!-- <plotly-plot [data]="graph.data"></plotly-plot> -->
+

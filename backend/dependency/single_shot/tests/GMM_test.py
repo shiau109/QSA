@@ -72,8 +72,8 @@ def draw_ellipse(position, covariance, ax=None, **kwargs):
     kwargs["angle"] = angle
     # Draw the Ellipse
     for nsig in range(1, 4):
-        # print(position, nsig*width, nsig*height,angle)
-        ax.add_patch( Ellipse(position, nsig*width, nsig*height, **kwargs) )# , angle))
+        print(position, nsig*width, nsig*height,angle)
+        ax.add_patch( Ellipse(position, nsig*width, nsig*height, angle=angle, **kwargs ))
         
 from matplotlib import transforms
 

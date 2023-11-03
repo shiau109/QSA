@@ -41,16 +41,16 @@ export class AnalysisService {
 
 
   /** GET Jobs from the server */
-  get_state_distribution_paras( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<JobSummary[]> {
-    const url = `${this.dataUrl}/analysis/resonator_fit`;
-    console.log({prePro_req, ana_req})
-    return this.http.post<any>( url,{prePro_req, ana_req})
-      .pipe(
-        tap(_ => this.log('fetched analysis')),
-        catchError(this.handleError<any>('get_resonator_qfactor', []))
-      );
+  // get_state_distribution_paras( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<JobSummary[]> {
+  //   const url = `${this.dataUrl}/analysis/resonator_fit`;
+  //   console.log({prePro_req, ana_req})
+  //   return this.http.post<any>( url,{prePro_req, ana_req})
+  //     .pipe(
+  //       tap(_ => this.log('fetched analysis')),
+  //       catchError(this.handleError<any>('get_resonator_qfactor', []))
+  //     );
       
-  }
+  // }
 
 
 
@@ -68,6 +68,20 @@ export class AnalysisService {
       tap(_ => this.log(`fetched resonator_fit/download`)),
       catchError(this.handleError<any>(`resonator_fit/download return error`))
     );
+  };
+
+  getTrainingData( prePro_req:PreProcessRequest, ana_req: AnaRequest_resonator ): Observable<any>{
+    const url = `${this.dataUrl}/analysis/single_shot/state_distinguishability/plot`;
+    let httpOptions = { 
+      responseType: "blob" as "blob" 
+    }
+    console.log('service getTrainingData');
+
+    return this.http.post(url, {prePro_req, ana_req}, httpOptions).pipe(
+      tap(_ => this.log('fetched analysis')),
+      catchError(this.handleError<any>('get_resonator_qfactor', []))
+    );
+
   };
 
   /** Log a SampleService message with the MessageService */

@@ -19,29 +19,30 @@ export class SingleShotDistributionComponent {
     ana_req: ['{}',Validators.required],
   });
   graph: any;
+  imageSrc: any;
+  show_plot: boolean ;
   constructor(  private fb:FormBuilder,
     private route: ActivatedRoute,
     private jobService: JobService,
     private analysisService: AnalysisService,
     // private location: Location
     private b2p:BackToPlotlyService ) {
+      this.show_plot = false;
     }
-  
   do_analysis(){
 
       console.log("Analysis")
       let jsonObj_preProcess = JSON.parse(this.ana_ReqForm.value.prePro_req!);
       let jsonObj_ana = JSON.parse(this.ana_ReqForm.value.ana_req!);
       console.log(jsonObj_preProcess,jsonObj_ana)
-      this.analysisService.get_resonator_qfactor(jsonObj_preProcess,jsonObj_ana).subscribe( data => {
-      console.log('return',data);
-      console.log(Object.keys(data));
-      let fit_result_traces = this.b2p.data1DtTraces_dict(data,"index");
-      this.graph = {
-        data: fit_result_traces,
-        layout: {width: 320, height: 240, title: 'Fit result'}
-      };
-    });
+      this.analysisService.getTrainingData(jsonObj_preProcess,jsonObj_ana).subscribe(blob => {
+          const url = URL.createObjectURL(blob);
+          this.imageSrc = url;
+          this.show_plot = true;
+        });
+
+      
+    
   }
 
   download(){

@@ -21,8 +21,29 @@ test_data = get_sim_data( pos, test_ratio, noise, total_points )
 print(training_data.shape)
 
 my_model = GMM_model()
-my_model.training(training_data.transpose())
-my_model.predict_data(test_data.transpose())
+my_model.import_trainingData(training_data.transpose())
+label = my_model.get_prediction(test_data.transpose())+1
 
-print(my_model.get_label())
+plot_data_dict = {
+    "I": test_data[0],
+    "Q": test_data[1],
+    "label":label#.tobytes()
+}
+import plotly.express as px
+from pandas import DataFrame
+df = DataFrame(plot_data_dict)
+print(df.dtypes)
 
+df["label"] = df["label"].astype(str)
+# df["label"]
+# color_discrete_map = {
+#     "1": 'blue', 
+#     "2": 'red'
+#     }
+# for k in color_discrete_map.keys():
+#     print(df["label"].values[0] == k)
+# print(df["label"].values[0])
+# print(df["label"].values[1])
+
+fig = px.scatter(df, x="I", y="Q",  color="label", color_discrete_sequence=["blue","red"])
+fig.show()
