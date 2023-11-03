@@ -83,9 +83,10 @@ def upload_file( file: UploadFile, background_tasks: BackgroundTasks ):
 
     for label in data.keys():
         print(f"{label} with shape {data[label].shape}")
-        dist_model = train_model(data[label])
+        ana_data = data[label]*1000
+        dist_model = train_model(ana_data)
         # qubit_freq = float(label)
-        img_buf = create_img( data[label], dist_model)# , qubit_freq )
+        img_buf = create_img( ana_data, dist_model)# , qubit_freq )
 
     background_tasks.add_task(img_buf.close)
     headers = {'Content-Disposition': 'inline; filename="out.png"'}
