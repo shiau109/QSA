@@ -22,4 +22,7 @@ pip install -e ..\Dependency\resonator_tools
 ECHO Installing single_shot
 pip install -e ..\Dependency\single_shot
 
+ECHO Installing single_shot
+pip install -e ..\Dependency\t_tools
+
 PAUSE
