@@ -10,19 +10,19 @@ import pandas as pd
 import io
 
 router = APIRouter(
-    prefix="/analysis/T1",
+    prefix="/analysis/T2",
     # tags=["myapp"],
     dependencies=[],
     responses={404: {"description": "Not found"}},
 )
 
-@router.post('/T1_relexation/uploadfile', tags=["analysis"])
+@router.post('/T2_relexation/uploadfile', tags=["analysis"])
 def upload_file( file: UploadFile, background_tasks: BackgroundTasks ):
     """
     Only can give one qubit analysis yet.
     """
     df_data = pd.read_csv(file.file)
-    relaxation_time = df_data['<b>T1</b>'].to_numpy()
+    relaxation_time = df_data['<b>T2</b>'].to_numpy()
     relaxation_time /= 1e3
     iq_data = np.array([df_data['I'].to_numpy(),df_data['Q'].to_numpy()])
     
@@ -37,14 +37,12 @@ def upload_file( file: UploadFile, background_tasks: BackgroundTasks ):
     # xdata = project_line(I0, Q0, I1, Q1, iq_data.transpose())[:,0]/10**6
     ydata = project_line(I0, Q0, I1, Q1, iq_data.transpose(), relaxation_time.shape[0])
     print(ydata.shape)
-    popt = T1_fitting(relaxation_time, ydata)
-    print(popt[1])
+    popt = T2_fitting(relaxation_time, ydata)
     img_buf = create_img( relaxation_time, ydata, popt)# , qubit_freq )
 
     background_tasks.add_task(img_buf.close)
     headers = {'Content-Disposition': 'inline; filename="out.png"'}
     return Response(img_buf.getvalue(), headers=headers, media_type='image/png')
-
 
 def create_img( xdata, ydata, popt):
 
@@ -66,17 +64,16 @@ def create_img( xdata, ydata, popt):
     ax_iq_all.tick_params(axis='both', labelsize=15)
     # ax_iq_all.tick_params(axis='y', labelsize=15)
     ax_iq_all.plot( xdata, ydata, "o" )
-    ax_iq_all.plot(xdata,expdecay(xdata,*popt), "-")
+    ax_iq_all.plot(xdata,cos_expdecay(xdata,*popt), "-")
     # Output image
     img_buf = io.BytesIO()
     fig.savefig(img_buf, format='png')
     plt.close(fig)
     return img_buf
 
-
-def expdecay(x,a, b,c):
+def cos_expdecay(x,a, b, c, d, e):
     #p: amp, tau, offset
-    return a*np.exp(-x/b)+c
+    return a*np.cos(b*x+c)*np.exp(-x/d)+e
 
 def readfile(s):
     #T1, I, Q
@@ -98,23 +95,6 @@ def project_line(I0, Q0, I1, Q1, t_I_Q, N):
         pro.append(c[0])
     pro = np.array(pro)
     return pro
-def T1_fitting(xdata, ydata):
-    popt, pcov = sco.curve_fit(expdecay, xdata, ydata)
+def T2_fitting(xdata, ydata):
+    popt, pcov = sco.curve_fit(cos_expdecay, xdata, ydata)
     return popt
-
-if __name__ == "__main__":
-    a = readfile("1DSingle_Qubit.csv")
-    I1 = float(a[0,1])
-    Q1 = float(a[0,2])
-    I0 = float(a[100,1])
-    Q0 = float(a[100,2])
-    xdata = project_line(I0, Q0, I1, Q1, a)[:,0]/10**6
-    ydata = project_line(I0, Q0, I1, Q1, a)[:,1]
-    # print(xdata)
-    plt.plot(xdata,ydata)
-
-
-    popt, pcov = sco.curve_fit(expdecay, xdata, ydata)
-    print(popt)
-    plt.plot(xdata,expdecay(xdata,*popt))
-    plt.show()
