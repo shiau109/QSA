@@ -75,18 +75,39 @@ state_dist_fn = r"state_dist.npz"
 from fastapi import File, UploadFile
 
 @router.post('/state_distinguishability/uploadfile', tags=["analysis"])
-def upload_file( file: UploadFile, background_tasks: BackgroundTasks ):
+def upload_file( file: UploadFile, data_format:str, background_tasks: BackgroundTasks ):
     """
     Only can give one qubit analysis yet.
     """
-    data = np.load(file.file)
+    
+    match data_format:
+        case "npz":
+            data = np.load(file.file)
 
-    for label in data.keys():
-        print(f"{label} with shape {data[label].shape}")
-        ana_data = data[label]*1000
-        dist_model = train_model(ana_data)
-        # qubit_freq = float(label)
-        img_buf = create_img( ana_data, dist_model)# , qubit_freq )
+            for label in data.keys():
+                print(f"{label} with shape {data[label].shape}")
+                ana_data = data[label]
+                ana_data *= 1000
+                dist_model = train_model(ana_data)
+                # qubit_freq = float(label)
+                img_buf = create_img( ana_data, dist_model)# , qubit_freq )
+        case "csv":
+            data = pd.read_csv(file.file)
+            pre_g = data[(data["state"]==0)]
+            pre_e = data[(data["state"]==1)]
+
+            ana_data = np.empty((2,2,len(pre_g.index)))
+            ana_data[0][0] = pre_g["I"].to_numpy()
+            ana_data[0][1] = pre_g["Q"].to_numpy()
+            ana_data[1][0] = pre_e["I"].to_numpy()
+            ana_data[1][1] = pre_e["Q"].to_numpy()
+            ana_data *= 1000
+            dist_model = train_model(ana_data)
+            # qubit_freq = float(label)
+            img_buf = create_img( ana_data, dist_model)# , qubit_freq )
+        case _:
+            data = []
+    
 
     background_tasks.add_task(img_buf.close)
     headers = {'Content-Disposition': 'inline; filename="out.png"'}
@@ -149,13 +170,12 @@ def train_model( data ):
     idata = np.array([])
     qdata = np.array([])
     for i in range(data.shape[0]):
-        print(idata.shape)
         idata = np.append(idata,data[i][0])
         qdata = np.append(qdata,data[i][1])
     training_data = np.array([idata, qdata])
     my_model = GMM_model()
     my_model.import_trainingData(training_data.transpose())
-
+    my_model.relabel_model(data[0])
     return my_model
 
 def create_img( data, dist_model ):
@@ -232,14 +252,15 @@ def create_img( data, dist_model ):
     sigma_0 = get_sigma(dist_model.output_paras()["covariances"][0])
     sigma_1 = get_sigma(dist_model.output_paras()["covariances"][1])
     sigma = np.max( np.array([sigma_0,sigma_1]) )
-    print([sigma_0,sigma_1])
     centers = dist_model.output_paras()["means"]
+    print(centers)
     pos = get_proj_distance(centers,centers.transpose())
     dis = np.abs(pos[1]-pos[0])
     make_distribution( pos, sigma, get_proj_distance(centers,prepare_0_data), 0, ax_hist_0)
     make_distribution( pos, sigma, get_proj_distance(centers,prepare_1_data), 1, ax_hist_1)
 
     snr = dis/sigma
+    fig.text(0.05,0.35,f"Readout Fidelity={1-prepare_0_dist[1]-prepare_1_dist[0]:.3f}", fontsize = 20)
     fig.text(0.05,0.3,f"IQ distance/STD={dis:.2f}/{sigma:.2f}", fontsize = 20)
     fig.text(0.05,0.25,f"Voltage SNR={snr:.2f}", fontsize = 20)
     fig.text(0.05,0.20,f"Power SNR={np.log10(snr)*20:.2f} dB", fontsize = 20)
@@ -372,13 +393,13 @@ def make_gaussian_fit_curve(xdata, result:ModelResult, ax):
     pars['amplitude'].set(value=result.params["g0_amplitude"].value)
     pars['sigma'].set(value=result.params["g0_sigma"].value)
     gm.eval(pars, x=xdata)
-    ax.plot(xdata, gm.eval(pars, x=xdata), '--', color="r",label='line 1', linewidth=2)
+    ax.plot(xdata, gm.eval(pars, x=xdata), '--', color="b",label='line 1', linewidth=2)
     
     pars['center'].set(value=result.params["g1_center"].value)
     pars['amplitude'].set(value=result.params["g1_amplitude"].value)
     pars['sigma'].set(value=result.params["g1_sigma"].value) 
     gm.eval(pars, x=xdata)    
-    ax.plot(xdata, gm.eval(pars, x=xdata), '--', color="b",label='line 2', linewidth=2)
+    ax.plot(xdata, gm.eval(pars, x=xdata), '--', color="r",label='line 2', linewidth=2)
 
 
 def get_proj_distance( proj_pts, iq_data ):

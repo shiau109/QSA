@@ -18,7 +18,24 @@ class GMM_model():
         self.training_data = data
         self.gmm.fit(data)
         self.gmm.weights_ = [0.5,0.5]
+
         # return self
+    def relabel_model( self, ground_data ):
+        """
+        input numpy array with shape (2,n)
+        """
+        print( ground_data.shape )
+
+        gp = np.array([np.mean(ground_data, axis=1)])
+        print( gp )
+        print( gp.shape )
+
+        print(self.gmm.predict( gp ))
+        if self.gmm.predict( gp ) == 1:
+            self.gmm.means_ = np.flip(self.gmm.means_,0)
+            self.gmm.weights_ = np.flip(self.gmm.weights_,0)
+            self.gmm.covariances_ = np.flip(self.gmm.covariances_,0)
+            self.gmm.precisions_cholesky_ = np.flip(self.gmm.precisions_cholesky_,0)
 
     def output_paras( self ):
         """
