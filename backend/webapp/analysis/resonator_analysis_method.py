@@ -14,7 +14,7 @@ def cavityQ_fit( freq:np.ndarray, s21:np.ndarray, power:np.ndarray=None ):
     fitCurves = []
     with_power = False
     dep_num = s21.shape[0]
-    print(f"Dimen {freq.shape} {s21.shape}")
+    print(f"Dim {freq.shape} {s21.shape}")
     if type(power) != type(None):
         with_power = True
         print("get power input")
